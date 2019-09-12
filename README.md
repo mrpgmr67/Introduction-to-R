@@ -1,2 +1,3 @@
-# r-intro-code
-Data 710 Introduction to R
+# Introduction to R
+
+The basics of R programming are introduced including software installation and configuration necessary for effective data analysis. Generic programming language concepts are introduced and covered within the context of how they are implemented in practice when conducting highlevel statistical analysis. The instructional approach in this course focuses on application-based introduction of programming concepts such as reading data into R, accessing analysis tool boxes in R, writing R functions, debugging, and organizing and commenting in R code. Data mining and analysis projects will be used to provide working examples.
