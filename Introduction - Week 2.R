@@ -1,5 +1,9 @@
 # Week 2 Introduction - Data 710 Introduction to R Programming
 # Vectors, Matrices, and Arrays
+#
+# GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
+#
+##########################################################################
 
 # Simple Vector explicit declare (ten items)
 x <- vector(length=10)

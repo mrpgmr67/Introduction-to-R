@@ -1,5 +1,9 @@
 # Week 2 Introduction - Data 710 Introduction to R Programming
 # Matrices, and Arrays
+#
+# GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
+#
+##########################################################################
 
 # Create a simple matrix
 m <- matrix(c(1,2,3,4,5,6), nrow=2, byrow=T)   # Six elements, two rows
@@ -17,7 +21,8 @@ str(m)
 apply(m,2,mean)
 
 # Create a new matrix by binding together c and d  (cbind for column / rbind for row)
-f <- cbind(c,d)
+f <- cbind(c,d)   # Bind columns
+f1 <- rbind(c,d)  # Bind rows
 
 # Bind names to the columns for f of Start and End
 colnames(f) <-c("Start", "End")
