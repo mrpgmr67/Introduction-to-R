@@ -42,6 +42,6 @@ Michael J. Crawley
 Wiley
 
 ## Organizational Structure ##
-/Introductions   Introductory scripts to each week
-/Solutions       Solution files for each week
-/Data            Data files used
+Introductions   Introductory scripts to each week
+Solutions       Solution files for each week
+Data            Data files used
