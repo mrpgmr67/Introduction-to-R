@@ -5,6 +5,8 @@
 #
 ##########################################################################
 
+setwd("D:/Davenport/Data 710 Scripts/Data")                      # Don't forget to set to your working directory to find the files
+
 #  Creating a simple data frame
 x <- c(seq(1:10))
 y <- seq(from=1, to=20, by=2)

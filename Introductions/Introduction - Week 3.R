@@ -43,3 +43,30 @@ lapply(a$salary,mean)
 # Create a new vector using the mean of list a$salary
 b<- sapply(a$salary,mean)
 b
+
+###################################################################################################################
+#  Here is a good rundown of the various apply functions
+#
+#  https://www.guru99.com/r-apply-sapply-tapply.html
+#
+#  apply(x, MARGIN, function_name)
+#    x = array or matrix
+#    MARGIN = 1 for rows or 2 for columns.  If you use c(1,2) it will apply to both
+#    function_name = name of function
+#
+#  example:   m1 <- matrix(c<-(1:10), nrow=5, ncol=6)
+#             apply(m1, 2, sum)     performs a sum of the column
+#
+#  lapply(x, function_name)         Think l means list!
+#    x = vector or object
+#    function_name = name of function
+#
+#  example:  lapply(c("ONE","TWO","THREE"), tolower)  would result in "one", "two", "three"
+#
+#  you can also use unlist() to turn a list into a vector!
+#
+#  example:  unlist(lapply(c("ONE","TWO","THREE"), tolower))   results in a vector of "one" "two" "three"
+#
+#  sapply(x,function_name)   does the same job as lapply but returns a vector automatically
+#
+#  example:  sapply(cars, min)     use the cars dataset and perform a min on each element.  Return a vector
