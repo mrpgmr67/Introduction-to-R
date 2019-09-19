@@ -1,8 +1,8 @@
-# Introduction to R Programming
+# Introduction to R Programming #
 
 The basics of R programming are introduced including software installation and configuration necessary for effective data analysis. Generic programming language concepts are introduced and covered within the context of how they are implemented in practice when conducting highlevel statistical analysis. The instructional approach in this course focuses on application-based introduction of programming concepts such as reading data into R, accessing analysis tool boxes in R, writing R functions, debugging, and organizing and commenting in R code. Data mining and analysis projects will be used to provide working examples.
 
-# Learning Outcomes
+## Learning Outcomes ##
 
 Upon successful completion of this course, the student should be able to:
 
@@ -17,7 +17,7 @@ Upon successful completion of this course, the student should be able to:
 9.	Import and Export data files of different data types
 10.	Install R, R-Studio, R packages, and R workbench 
 
-# Required Textbooks 
+### Required Textbooks ##
 
 978-1593273842
 The Art of R Programing: A Tour of Statistical Software Design
@@ -29,7 +29,7 @@ R Cookbook (O'Reilly Cookbooks)
 Paul Teetor
 O'Reilly Media
 
-# Optional Textbooks
+### Optional Textbooks ###
 
 9781466586963
 Advanced R (Chapman & Hall/CRC The R Series)
@@ -41,3 +41,7 @@ The R Book
 Michael J. Crawley
 Wiley
 
+## Organizational Structure ##
+/Introductions   Introductory scripts to each week
+/Solutions       Solution files for each week
+/Data            Data files used
