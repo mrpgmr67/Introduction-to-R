@@ -4,7 +4,9 @@
 #   Michael S. Pomatto  (mpomatto@davenport.edu)
 #   Week 4 - Factors and Tables
 #
-###################################################################################
+#   GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
+#
+##########################################################################
 any_vector <- c(5,12,13,12, 10, 15)
 
 # Create a factor
@@ -13,10 +15,6 @@ sample_factor <- factor(any_vector)
 #  Let's look at the structure
 str(sample_factor)
 unclass(sample_factor)
-
-#  Add levels to the factor
-new_factor <- factor(sample_factor, levels=c(3,4,4,2))
-new_factor
 
 any_vector_categories <- c("K", "M", "I", "I", "I", "M")
 
