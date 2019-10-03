@@ -226,59 +226,72 @@ p<-printTree(aTree)
 
 # forms a row for an event of type evntty that will occur at time
 # evnttm; see comments in schedevnt() regarding appin
-evntrow <- function(evnttm,evntty,appin=NULL) {
-  rw <- c(list(evnttime=evnttm,evnttype=evntty),appin)
+evntrow <- function(evnttm, evntty, appin = NULL) {
+  rw <- c(list(evnttime = evnttm, evnttype = evntty), appin)
   return(as.data.frame(rw))
 }
 
 # insert event with time evnttm and type evntty into event list;
 # appin is an optional set of application-specific traits of this event,
 # specified in the form a list with named components
-schedevnt <- function(evnttm,evntty,appin=NULL) {
-  newevnt <- evntrow(evnttm,evntty,appin)
+schedevnt <- function(evnttm, evntty, appin = NULL) {
+  newevnt <- evntrow(evnttm, evntty, appin)
   # if the event list is empty, set it to consist of evnt and return
   if (is.null(sim$evnts)) {
     sim$evnts <<- newevnt
     return()
   }
   # otherwise, find insertion point
-  inspt <- binsearch((sim$evnts)$evnttime,evnttm) 
+  inspt <- binsearch((sim$evnts)$evnttime, evnttm)
   # now "insert," by reconstructing the data frame; we find what
   # portion of the current matrix should come before the new event and
   # what portion should come after it, then string everything together
-  before <- 
-    if (inspt == 1) NULL else sim$evnts[1:(inspt-1),]
+  before <-
+    if (inspt == 1)
+      NULL
+  else
+    sim$evnts[1:(inspt - 1), ]
   nr <- nrow(sim$evnts)
-  after <- if (inspt <= nr) sim$evnts[inspt:nr,] else NULL
-  sim$evnts <<- rbind(before,newevnt,after)
+  after <- if (inspt <= nr)
+    sim$evnts[inspt:nr, ]
+  else
+    NULL
+  sim$evnts <<- rbind(before, newevnt, after)
 }
 
 # binary search of insertion point of y in the sorted vector x; returns
 # the position in x before which y should be inserted, with the value
 # length(x)+1 if y is larger than x[length(x)]; could be changed to C
 # code for efficiency
-binsearch <- function(x,y) {
+binsearch <- function(x, y) {
   n <- length(x)
   lo <- 1
   hi <- n
-  while(lo+1 < hi) {
-    mid <- floor((lo+hi)/2)
-    if (y == x[mid]) return(mid)
-    if (y < x[mid]) hi <- mid else lo <- mid
+  while (lo + 1 < hi) {
+    mid <- floor((lo + hi) / 2)
+    if (y == x[mid])
+      return(mid)
+    if (y < x[mid])
+      hi <- mid
+    else
+      lo <- mid
   }
-  if (y <= x[lo]) return(lo)
-  if (y < x[hi]) return(hi)
-  return(hi+1)
+  if (y <= x[lo])
+    return(lo)
+  if (y < x[hi])
+    return(hi)
+  return(hi + 1)
 }
 
 # start to process next event (second half done by application
-# programmer via call to reactevnt()) 
+# programmer via call to reactevnt())
 getnextevnt <- function() {
-  head <- sim$evnts[1,]
+  head <- sim$evnts[1, ]
   # delete head
   if (nrow(sim$evnts) == 1) {
     sim$evnts <<- NULL
-  } else sim$evnts <<- sim$evnts[-1,]
+  } else
+    sim$evnts <<- sim$evnts[-1, ]
   return(head)
 }
 
@@ -293,28 +306,34 @@ getnextevnt <- function() {
 #       wait
 #    apppars:  list of application-specific parameters, e.g.
 #      number of servers in a queuing app
-#    maxsimtime:  simulation will be run until this simulated time 
+#    maxsimtime:  simulation will be run until this simulated time
 #    dbg:  debug flag; if TRUE, sim will be printed after each event
-dosim <- function(initglbls,reactevnt,prntrslts,maxsimtime,apppars=NULL,
-                  dbg=FALSE) {
-  sim <<- list()
-  sim$currtime <<- 0.0  # current simulated time
-  sim$evnts <<- NULL  # events data frame
-  sim$dbg <<- dbg
-  initglbls(apppars)
-  while(sim$currtime < maxsimtime) {  
-    head <- getnextevnt()
-    sim$currtime <<- head$evnttime  # update current simulated time
-    reactevnt(head)  # process this event 
-    if (dbg) print(sim)
+dosim <-
+  function(initglbls,
+           reactevnt,
+           prntrslts,
+           maxsimtime,
+           apppars = NULL,
+           dbg = FALSE) {
+    sim <<- list()
+    sim$currtime <<- 0.0  # current simulated time
+    sim$evnts <<- NULL  # events data frame
+    sim$dbg <<- dbg
+    initglbls(apppars)
+    while (sim$currtime < maxsimtime) {
+      head <- getnextevnt()
+      sim$currtime <<- head$evnttime  # update current simulated time
+      reactevnt(head)  # process this event
+      if (dbg)
+        print(sim)
+    }
+    prntrslts()
   }
-  prntrslts()
-}
 
-# Bus terminal application specific functions 
-# This simulation assumes a normal distribution for the servicing and arrival of a bus at a terminal.  
+# Bus terminal application specific functions
+# This simulation assumes a normal distribution for the servicing and arrival of a bus at a terminal.
 # The key to the simulation will largely be the identification of the right distribution.  A normal
-# distribution would not be a proper choice if there are going to be values near zero, which would result 
+# distribution would not be a proper choice if there are going to be values near zero, which would result
 # in an error trap.  By adjusting the values in the error trap, the normal distribution would be lost.
 terminalInitGlbls <- function(apppars) {
   terminal.Glbls <<- list()
@@ -324,61 +343,64 @@ terminalInitGlbls <- function(apppars) {
   terminal.Glbls$srvrate <<- apppars$srvrate
   terminal.Glbls$srvsd <<- apppars$srvsd
   # server queue, consisting of arrival times of queued jobs
-  terminal.Glbls$srvq <<- vector(length=0) 
+  terminal.Glbls$srvq <<- vector(length = 0)
   # statistics
   terminal.Glbls$busesDeparted <<- 0  # jobs done so far
   terminal.Glbls$totwait <<- 0.0  # total wait time so far
-
-  aTime <- rnorm(1,terminal.Glbls$arrvrate,terminal.Glbls$arrvsd)
+  
+  aTime <- rnorm(1, terminal.Glbls$arrvrate, terminal.Glbls$arrvsd)
   # Prevent buses from arriving "in the past" or at the same time
-  ifelse (aTime <= 0,1,aTime)                     
+  ifelse (aTime <= 0, 1, aTime)
   arrvtime <- sim$currtime + aTime
-  schedevnt(arrvtime,"arrv",list(arrvtime=arrvtime))
+  schedevnt(arrvtime, "arrv", list(arrvtime = arrvtime))
 }
 
 # application-specific event processing function called by dosim()
-# in the general DES library 
+# in the general DES library
 terminalEvent <- function(head) {
-  if (head$evnttype == "arrv") {  # arrival
-
+  if (head$evnttype == "arrv") {
+    # arrival
+    
     if (length(terminal.Glbls$srvq) == 0) {
       terminal.Glbls$srvq <<- head$arrvtime
-
-      aTime <- rnorm(1,terminal.Glbls$srvrate,terminal.Glbls$srvsd)
+      
+      aTime <- rnorm(1, terminal.Glbls$srvrate, terminal.Glbls$srvsd)
       
       # Error Trap - Bus must stop for at least 1 minute to handle empty buses
-      ifelse (aTime <= 0,1,aTime)
+      ifelse (aTime <= 0, 1, aTime)
       
-      srvdonetime <- sim$currtime + aTime                     
+      srvdonetime <- sim$currtime + aTime
       
-      schedevnt(srvdonetime,"srvdone",list(arrvtime=head$arrvtime))
+      schedevnt(srvdonetime, "srvdone", list(arrvtime = head$arrvtime))
     } else {
-      terminal.Glbls$srvq <<- c(terminal.Glbls$srvq,head$arrvtime)
+      terminal.Glbls$srvq <<- c(terminal.Glbls$srvq, head$arrvtime)
     }
     
     # generate next arrival using a normal distribution
-    aTime <- rnorm(1,terminal.Glbls$arrvrate,terminal.Glbls$arrvsd)
+    aTime <- rnorm(1, terminal.Glbls$arrvrate, terminal.Glbls$arrvsd)
     # Error Trap - Prevent buses from arriving "in the past" or at the same time
-    ifelse (aTime <= 0,1,aTime)                     
+    ifelse (aTime <= 0, 1, aTime)
     arrvtime <- sim$currtime + aTime
-    schedevnt(arrvtime,"arrv",list(arrvtime=arrvtime))
-  } else {  
-
+    schedevnt(arrvtime, "arrv", list(arrvtime = arrvtime))
+  } else {
     terminal.Glbls$busesDeparted <<- terminal.Glbls$busesDeparted + 1
-    terminal.Glbls$totwait <<- terminal.Glbls$totwait + sim$currtime - head$arrvtime
+    terminal.Glbls$totwait <<-
+      terminal.Glbls$totwait + sim$currtime - head$arrvtime
     # remove from queue
     terminal.Glbls$srvq <<- terminal.Glbls$srvq[-1]
     # more still in the queue?
     if (length(terminal.Glbls$srvq) > 0) {
       # schedule new service
       
-      aTime <- rnorm(1,terminal.Glbls$srvrate,terminal.Glbls$srvsd)
+      aTime <- rnorm(1, terminal.Glbls$srvrate, terminal.Glbls$srvsd)
       # Bus must stop for at least 1 minute to handle empty situations
-      ifelse (aTime <= 0,1,aTime)
+      ifelse (aTime <= 0, 1, aTime)
       
-      srvdonetime <- sim$currtime + aTime                     
-      schedevnt(srvdonetime,"srvdone",list(arrvtime=terminal.Glbls$srvq[1]))
-    } 
+      srvdonetime <- sim$currtime + aTime
+      schedevnt(srvdonetime,
+                "srvdone",
+                list(arrvtime = terminal.Glbls$srvq[1]))
+    }
   }
 }
 
@@ -388,16 +410,48 @@ terminalSimResultsPrint <- function() {
   print("Total Buses Serviced:")
   print(terminal.Glbls$busesDeparted)
   print("Bus mean times (minutes):")
-  print(terminal.Glbls$totwait/terminal.Glbls$busesDeparted)
+  print(terminal.Glbls$totwait / terminal.Glbls$busesDeparted)
 }
 
 # Bus termininal is open for 12 hours a day (i.e. 720 minutes)
 # A simulation with typical parameters
-dosim(terminalInitGlbls,terminalEvent,terminalSimResultsPrint,720,list(arrvrate=45,arrvsd=10,srvrate=45,srvsd=10))
+dosim(
+  terminalInitGlbls,
+  terminalEvent,
+  terminalSimResultsPrint,
+  720,
+  list(
+    arrvrate = 45,
+    arrvsd = 10,
+    srvrate = 45,
+    srvsd = 10
+  )
+)
 
 # A simulation with quick service rates
-dosim(terminalInitGlbls,terminalEvent,terminalSimResultsPrint,720,list(arrvrate=45,arrvsd=10,srvrate=5,srvsd=1))
+dosim(
+  terminalInitGlbls,
+  terminalEvent,
+  terminalSimResultsPrint,
+  720,
+  list(
+    arrvrate = 45,
+    arrvsd = 10,
+    srvrate = 5,
+    srvsd = 1
+  )
+)
 
 # A simulation with quick arrivals
-dosim(terminalInitGlbls,terminalEvent,terminalSimResultsPrint,720,list(arrvrate=5,arrvsd=1,srvrate=45,srvsd=10))
-
+dosim(
+  terminalInitGlbls,
+  terminalEvent,
+  terminalSimResultsPrint,
+  720,
+  list(
+    arrvrate = 5,
+    arrvsd = 1,
+    srvrate = 45,
+    srvsd = 10
+  )
+)
