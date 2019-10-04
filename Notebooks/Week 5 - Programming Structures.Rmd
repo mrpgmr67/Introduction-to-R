@@ -1,9 +1,7 @@
 ---
-title: "Week 5 - Programming Structures"
+title: "Week 5 Programming Structures"
 output:
   word_document:
-    toc: yes
-  pdf_document:
     toc: yes
   html_notebook:
     toc: yes
@@ -148,7 +146,7 @@ mySortedNum
 ## Binary Search Tree
 Here is an example of a binary search tree of size 9, depth 3, with 8 as the root.
 
-![source:](./Data/Binary Search Tree.JPG)
+https://github.com/mrpgmr67/Introduction-to-R/blob/master/Data/Binary%20Search%20Tree.JPG
 
 Details: https://yourbasic.org/algorithms/binary-search-tree/
 
@@ -270,6 +268,8 @@ Create a discrete event simulation for a queue system involving a bus terminal. 
 - Event response
 - Get next event
 - Function to print the results of the simulation
+
+https://github.com/mrpgmr67/Introduction-to-R/blob/master/Data/Bus%20Simulation.JPG
 
 #### Full Points
 For full points you need separate functions for each of these items, plus a core "wrapper" function to encompass the entire thing.  This can be solved using very few steps, or it can be more complex.  Here is a complex example.
