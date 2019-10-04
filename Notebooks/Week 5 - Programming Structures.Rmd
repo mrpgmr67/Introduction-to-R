@@ -1,6 +1,8 @@
 ---
 title: "Week 5 - Programming Structures"
 output:
+  word_document:
+    toc: yes
   pdf_document:
     toc: yes
   html_notebook:
@@ -146,7 +148,7 @@ mySortedNum
 ## Binary Search Tree
 Here is an example of a binary search tree of size 9, depth 3, with 8 as the root.
 
-![source:](Binary Search Tree.JPG)
+![source:](./Data/Binary Search Tree.JPG)
 
 Details: https://yourbasic.org/algorithms/binary-search-tree/
 
