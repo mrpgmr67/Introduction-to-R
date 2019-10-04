@@ -1,9 +1,11 @@
 ---
 title: "Week 5 Programming Structures"
 output:
-  word_document:
+  pdf_document:
     toc: yes
   html_notebook:
+    toc: yes
+  word_document:
     toc: yes
 ---
 With the previous weeks completion of various structures for storing data, this week turns to the control structures and syntax of the R language. While the storage of data elements is very important, the real power of the language starts to become apparent when control structures and programming constructs are introduced. Upon completion of this weeks learning, students will have a good grasp of the core R language, and the learning will begin to introduce the use of simulations.
