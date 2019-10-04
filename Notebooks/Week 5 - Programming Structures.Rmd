@@ -1,10 +1,14 @@
 ---
 title: "Week 5 - Programming Structures"
-output: html_notebook
+output:
+  pdf_document:
+    toc: yes
+  html_notebook:
+    toc: yes
 ---
 With the previous weeks completion of various structures for storing data, this week turns to the control structures and syntax of the R language. While the storage of data elements is very important, the real power of the language starts to become apparent when control structures and programming constructs are introduced. Upon completion of this weeks learning, students will have a good grasp of the core R language, and the learning will begin to introduce the use of simulations.
 ```{r setup}
-knitr::opts_knit$set(root.dir = "D:/Davenport/Data 710 Scripts/Data")
+knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/")
 ```
 ## Weekly Learning Objectives
 
@@ -142,7 +146,7 @@ mySortedNum
 ## Binary Search Tree
 Here is an example of a binary search tree of size 9, depth 3, with 8 as the root.
 
-![Source: https://upload.wikimedia.org/wikipedia/commons/d/da/Binary_search_tree.svg](Data/Binary Search Tree.JPG)
+![source:](Binary Search Tree.JPG)
 
 Details: https://yourbasic.org/algorithms/binary-search-tree/
 
@@ -256,7 +260,6 @@ p<-printTree(aTree)
 ```
 
 ## Bus Terminal Simulation
-![Source: Bus Terminal Simulation Graphic](Data/Bus Simulation.JPG)
 
 Create a discrete event simulation for a queue system involving a bus terminal. It should include an event list, along with components to add and subtract from that list as buses arrive and depart from the terminal. The following functions should be present:
 - Core simulation function
