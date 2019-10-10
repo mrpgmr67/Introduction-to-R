@@ -1,10 +1,12 @@
-#####################################################################################
-# 
-#   Data 710:  Introduction to R
-#   Michael S. Pomatto  (mpomatto@davenport.edu)
-#   Week 7: Object Oriented Programming
+##########################################################################
+# Data 710: Introduction to R
+# Week 7: Assignment - Object Oriented Programming
 #
-#####################################################################################
+# GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
+#
+##########################################################################
+
+setwd("D:/Davenport/Data 710 Scripts/Data")                      # Don't forget to set to your working directory to find the files
 
 # Create a S3 class
 demo_names <- list(name="Mike", ID=1, Instructor = TRUE)         # Create a sample list
