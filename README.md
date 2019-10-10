@@ -45,3 +45,5 @@ Wiley
 1. Introductions - Introductory scripts to each week
 2. Solutions - Solution files for each week
 3. Data - Data files used
+4. Notebooks - R Notebook files
+5. PDF - Output from R Notebooks in PDF form
