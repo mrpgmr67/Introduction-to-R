@@ -1,9 +1,13 @@
 ---
 title: "Week 7 - Object Oriented Programming"
 output:
-  html_notebook: default
   pdf_document: default
+  html_notebook: default
 ---
+```{r setup}
+library(ggplot2)
+library(scatterplot3d)
+```
 No discussion of R would be complete without an examination of the object oriented capabilities. The R programming community has embraced many of the same constructs found in other object oriented languages, so a good understanding of these topics and the creation of classes is crucial to unlocking more advanced parts of the language. This would include advanced simulations and the creation of new R packages.  
 
 This week's assignment is about creating a farming simulation.
@@ -517,17 +521,7 @@ farmSim <- function(cornWorkers = 0,
   return(aCrop)
 }
 
-a <- farmSim(cornWorkers = 100,
-             wheatWorkers = 100,
-             soybeanWorkers = 100,
-             multiSkilledWorkers = 20,
-             workerSD = 5,
-             cornFields = 100,
-             wheatFields = 120,
-             soybeanFields = 125,
-             fieldSD = 5,
-             yearsToSim = 5
-)
+
 
 ```
 #### Testing Farm Simulation
@@ -553,3 +547,44 @@ Now let's test it out with:
 - fieldSD = 5
 
 - yearsToSim = 5
+
+```{r Test_FarmSim}
+a <- farmSim(cornWorkers = 100,
+             wheatWorkers = 100,
+             soybeanWorkers = 100,
+             multiSkilledWorkers = 20,
+             workerSD = 5,
+             cornFields = 100,
+             wheatFields = 120,
+             soybeanFields = 125,
+             fieldSD = 5,
+             yearsToSim = 5
+)
+
+test_plot <- as.data.frame(unclass(a))
+
+ggplot(data=test_plot, 
+       aes(x=test_plot$cropType, 
+           y=test_plot$cropYield,
+           fill = test_plot$year
+        )) +
+    geom_bar(stat="identity", position = "dodge2") +
+    theme(
+        plot.title = element_text("Simulation Results"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position="bottom"
+        ) +
+    labs(fill = "Year")
+
+scatterplot3d(test_plot$fieldNumber, 
+              test_plot$cropYield, 
+              test_plot$year, 
+              main = "Simulation Results",
+              xlab = "Field Number",
+              ylab = "Crop Yield",
+              zlab = "Year",
+              color = test_plot$year)
+
+```
+
