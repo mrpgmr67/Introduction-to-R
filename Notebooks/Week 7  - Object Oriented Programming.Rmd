@@ -1,8 +1,8 @@
 ---
 title: "Week 7 - Object Oriented Programming"
 output:
-  pdf_document: default
   html_notebook: default
+  pdf_document: default
 ---
 No discussion of R would be complete without an examination of the object oriented capabilities. The R programming community has embraced many of the same constructs found in other object oriented languages, so a good understanding of these topics and the creation of classes is crucial to unlocking more advanced parts of the language. This would include advanced simulations and the creation of new R packages.  
 
@@ -18,30 +18,81 @@ Create an R script with the following components:
 
 ## 1. Create a S3 class for Crops
 
+S3 classes are one of the most tricky things to master in R.  For those who may be familiar with object oriented programming language, the S4 class may be slightly easier to implement.  In addition to the text, I would strongly encourage you to read the R documentation sections:
+
+https://www.rdocumentation.org/packages/base/versions/3.6.1/topics/class
+https://www.rdocumentation.org/packages/base/versions/3.6.1/topics/UseMethod
+
 #### Full Points
-For full points you need to write a similar function.
+For full points you need to write a similar class.
+
+- Create a constructor function
+- Create a print function for the class
+- Create the class
+
+
+Given the difficulty of initial understanding of classes, there will be some flexibility in grading this section.
+
+In this example, the class is dependent on a constructor function called crops.  In that, we will setup a data frame that is used through the rest of the class.  When you see the .crops functions, it will be referring to elements within this data frame. 
 ```{r S3_Crops}
-# A crops constructor
-crops <- function(aCropType,aCropYield,aYear,aFieldNumber) {
-  
-  aLen <- length(aCropType)
-  aDataFrame <- NULL
-  if ((aLen != length(aCropYield) | (aLen != length(aYear)) | (aLen != length(aFieldNumber)))) {
-    cat("Error: Parameters need to be of the same length!")
-  } else {
-    aDataFrame <- data.frame(cropType=aCropType,cropYield=aCropYield,year=aYear,fieldNumber=aFieldNumber)
-    class(aDataFrame) <- "crops"
-  }
-  
+# A crops constructor.  Create one of these for your class.  This is executed when the first instance of the class
+# is created.  In this case
+crops <- function(aCropType,
+                  aCropYield,
+                  aYear,
+                  aFieldNumber) {
+  aLen <- length(aCropType)                                               # store the length of aCropType
+  aDataFrame <- NULL                                                      # initialize aDataFrame
+  if ((aLen != length(aCropYield) |                                       # Multiple OR statements (use the | character)
+       (aLen != length(aYear)) | (aLen != length(aFieldNumber)))) {
+    cat("Error: Parameters need to be of the same length!")               # Send out an error message 
+                                                                          #   This is your error handler!
+  } else {                                  
+    aDataFrame <-                                                         # initialize your data frame
+      data.frame(
+        cropType = aCropType,
+        cropYield = aCropYield,
+        year = aYear,
+        fieldNumber = aFieldNumber
+      )
+    class(aDataFrame) <- "crops"                                          # initialize your class using the dataframe
+  }                                                                       # and call it crops
   return(aDataFrame)
 }
 
-# Implement a nice print function for the class
-print.crops <- function(obj) {
-  aDF <- data.frame(unclass(obj))
-  print(aDF)
+# Implement a print function for the class
+print.crops <- function(obj) {            #  This is extremely basic.  
+  aDF <- data.frame(unclass(obj))         #  Unclass the object, turn it into a dataframe
+  print(aDF)                              #  Print the dataframe
 }
+```
+#### New Class Functions
 
+*New Functions*
+
+- cropMean() calculates the crop mean 
+
+- cropYearlyMean() calculates the crop yearly mean
+
+- addCrops() adds or merges crops
+
+*Default Functions*
+
+- cropMean.default()
+
+- cropYearlMean.default()
+
+- addCrops.default()
+
+*Extending Functions*
+
+- cropMean.crops()
+
+- cropYearlyMean.crops()
+
+- addCrops.crops()
+
+```{r}
 # Create new class function
 cropMean <- function(anObj) {
   UseMethod("cropMean")
@@ -51,140 +102,158 @@ cropMean.default <- function(anObj) {
   cat("This is a generic function\n")
 }
 cropMean.crops <- function(anObj) {
-
   anObj <- data.frame(unclass(anObj))
-  aResult<-mean(anObj$cropYield)
- 
-  return(aResult)   
+  aResult <- mean(anObj$cropYield)
+  return(aResult)
 }
+
 
 cropYearlyMean <- function(anObj) {
   UseMethod("cropYearlyMean")
 }
-# The default could have handled the mean, but built this to show a generic class and an extension
 cropYearlyMean.default <- function(anObj) {
   cat("This is a generic function\n")
 }
 cropYearlyMean.crops <- function(anObj) {
-  
   anObj <- data.frame(unclass(anObj))
-  
-  aResult <- aggregate(anObj[,"cropYield"],list(year=anObj$year),mean)
-  colnames(aResult) <- c("Year","Mean")
-  
-  return(aResult)   
+  aResult <- aggregate(anObj[, "cropYield"], list(year = anObj$year), mean)
+  colnames(aResult) <- c("Year", "Mean")
+  return(aResult)
 }
 
-# Create new addCrops class function.  This will add merge crops into a single data structure.
-addCrops <- function(anObj,aNewObj) {
+
+# Create new addCrops class function.  This will add or merge crops into a single data structure.
+addCrops <- function(anObj, aNewObj) {
   UseMethod("addCrops")
 }
-addCrops.default <- function(anObj,aNewObj) {
+addCrops.default <- function(anObj, aNewObj) {
   cat("This is a generic function\n")
 }
-addCrops.crops <- function(anObj,aNewObj) {
 
-   anObj <- data.frame(unclass(anObj))
-   aNewObj <- data.frame(unclass(aNewObj))
-   
-   aResult <- rbind(anObj,aNewObj)
-
-   class(aResult) <- "crops"
-   return(aResult)
+addCrops.crops <- function(anObj, aNewObj) {
+  anObj <- data.frame(unclass(anObj))
+  aNewObj <- data.frame(unclass(aNewObj))
+  aResult <- rbind(anObj, aNewObj)
+  class(aResult) <- "crops"
+  return(aResult)
 }
 ```
 #### Testing the Crops S3 class
 
+Now let's test it out.  We will create a new instance called aTestCrop of class crops.  We will initially populate it with soybeans, but then add wheat and corn to it.  *VERY IMPORTANT* notice that there are five elements in each of these function calls to ensure we do not have a parameter mismatch.
+
+For the test of the error handling, we want to cause that problem.  Instead of using five elements for the second parameter, we will use six.
 ```{r Test_S3_Crops}
 # Test new class
-aTestCrop <- crops(rep("soybeans",5),aCropYield = 6:10, aYear=c(1,1,1,1,1), aFieldNumber = 1:5)
-class(aTestCrop)
-cropMean(aTestCrop)
+aTestCrop <- crops(             # NOTICE each of these have FIVE elements.  That is important!
+    rep("soybeans", 5),         # Remember the use of the repeat function
+    aCropYield = 6:10,          # Setup crop yields as numbers between 6 and 10
+    aYear = c(1, 1, 1, 1, 1),   # Setup years as a concatenation of year 1 
+    aFieldNumber = 1:5          # Setup field number as 1 - 5
+)
+class(aTestCrop)                 
+cropMean(aTestCrop)             
 aTestCrop
 
-
-aNewTestCrop <- crops(rep("wheat",5),6:10,1:5,1:5)
+aNewTestCrop <- crops(rep("wheat", 5), 6:10, 1:5, 1:5)
 aTestCrop <- addCrops(aTestCrop, aNewTestCrop)
 
-aNewTestCrop <- crops(rep("corn",10),1:10,1:10,1:10)
+aNewTestCrop <- crops(rep("corn", 10), 1:10, 1:10, 1:10)
 aTestCrop <- addCrops(aTestCrop, aNewTestCrop)
 cropMean(aTestCrop)
 cropYearlyMean(aTestCrop)
 aTestCrop
 
 # Test Error Handling
-aNewTestCrop <- crops(rep("soybeans",5),5:10,1:5,1:5)
+aNewTestCrop <- crops(rep("soybeans", 5), 5:10, 1:5, 1:5)
 ```
-
-
 
 ## 2. Create a S4 class for Workers
 
-#### Full Points
-For full points you need to write a similar function.
+Creating a S4 class is much easier.  Again, I would strongly recommend you review the R Documentation talking about S4 methods and classes.
 
+https://www.rdocumentation.org/packages/methods/versions/3.3.2/topics/Introduction
+
+#### Full Points
+For full points you need to write a similar class.
+
+- Create a Farm Worker class.  It should have an ID, Crop Skillset, and indicator for multiple types
+
+- Create a generic function for worker summary
+
+- Create an overridden worker summary for multiple types
+
+- Create an add worker function
+
+- Create an overridden add worker function
+
+
+Given the difficulty of initial understanding of classes, there will be some flexibility in grading this section.
 ```{r S4_Worker}
-setClass("Farm_Worker",               
-         representation(
-           ID = "numeric",                
-           Crop_Skillset = "character",
-           Multiple_Types = "logical")
-#         validity=function(object) {
-#         }
-         
+setClass(                               
+  "Farm_Worker",
+  representation(
+    ID = "numeric",
+    Crop_Skillset = "character",
+    Multiple_Types = "logical"
+  )
 )
 Farm_Worker <- function(anId, aCrop_Skillset, aMultiple_Types) {
-  aResult <- new("Farm_Worker", ID=anId, Crop_Skillset=aCrop_Skillset, Multiple_Types=aMultiple_Types)
+  aResult <-
+    new(
+      "Farm_Worker",
+      ID = anId,
+      Crop_Skillset = aCrop_Skillset,
+      Multiple_Types = aMultiple_Types
+    )
   return(aResult)
 }
 
 # Create new generic function
-setGeneric(
-  "Worker_Summary",
-  function(anObj) {
-    standardGeneric("Worker_Summary")
-  }
-)
+setGeneric("Worker_Summary",
+           function(anObj) {
+             standardGeneric("Worker_Summary")
+           })
 
-setMethod("Worker_Summary","Farm_Worker",
-  function(anObj) {
-    ids <- slot(anObj,"ID")
-#    cat("Total number of workers: ",length(ids),"\n")
-    multiSkilled <- sum(anObj@Multiple_Types)
-    
-    skillsetTable <- table(crop=anObj@Crop_Skillset,multiSkill=anObj@Multiple_Types)
-#    print(skillsetTable)
-    aResult <- data.frame(skillsetTable)
-    return(aResult)
-  }
-)
-setGeneric(
-  "Add_Worker",
-  function(anObj,aNewObj) {
-    standardGeneric("Add_Worker")
-  }
-)
+setMethod("Worker_Summary", "Farm_Worker",
+          function(anObj) {
+            ids <- slot(anObj, "ID")
+            #    cat("Total number of workers: ",length(ids),"\n")
+            multiSkilled <- sum(anObj@Multiple_Types)
+            
+            skillsetTable <-
+              table(crop = anObj@Crop_Skillset,
+                    multiSkill = anObj@Multiple_Types)
+            #    print(skillsetTable)
+            aResult <- data.frame(skillsetTable)
+            return(aResult)
+          })
+setGeneric("Add_Worker",
+           function(anObj, aNewObj) {
+             standardGeneric("Add_Worker")
+           })
 
-setMethod("Add_Worker","Farm_Worker",
-          function(anObj,aNewObj) {
+setMethod("Add_Worker", "Farm_Worker",
+          function(anObj, aNewObj) {
             anIndex <- length(anObj@ID)
-            anObj@ID <- append(anObj@ID,aNewObj@ID,anIndex)
-            anObj@Crop_Skillset <- append(anObj@Crop_Skillset,aNewObj@Crop_Skillset,anIndex)
-            anObj@Multiple_Types <- append(anObj@Multiple_Types,aNewObj@Multiple_Types,anIndex)
+            anObj@ID <- append(anObj@ID, aNewObj@ID, anIndex)
+            anObj@Crop_Skillset <-
+              append(anObj@Crop_Skillset, aNewObj@Crop_Skillset, anIndex)
+            anObj@Multiple_Types <-
+              append(anObj@Multiple_Types, aNewObj@Multiple_Types, anIndex)
             return(anObj)
-          }
-)
+          })
 ```
 #### Testing the S4 Worker Class
 
 ```{r Test_S4_Worker}
-cornWorkers <- Farm_Worker(1:10,rep("corn",10),rep(FALSE,10))
-wheatWorkers <- Farm_Worker(11:15,rep("wheat",5),rep(FALSE,5))
-soybeanWorkers <- Farm_Worker(16:20,rep("soybeans",5),rep(FALSE,5))
-superWorkers <- Farm_Worker(21:25,rep("corn",5), rep(TRUE,5))
+cornWorkers <- Farm_Worker(1:10, rep("corn", 10), rep(FALSE, 10))
+wheatWorkers <- Farm_Worker(11:15, rep("wheat", 5), rep(FALSE, 5))
+soybeanWorkers <- Farm_Worker(16:20, rep("soybeans", 5), rep(FALSE, 5))
+superWorkers <- Farm_Worker(21:25, rep("corn", 5), rep(TRUE, 5))
 workers <- cornWorkers
-workers <- Add_Worker(workers,wheatWorkers)
-workers <- Add_Worker(workers,soybeanWorkers)
+workers <- Add_Worker(workers, wheatWorkers)
+workers <- Add_Worker(workers, soybeanWorkers)
 workers <- Add_Worker(workers, superWorkers)
 aSummary <- Worker_Summary(workers)
 aSummary
@@ -192,11 +261,20 @@ aSummary
 
 ## 3. Create an inherited class
 
+Creating an inherited class is relatively simple once you have mastered the creation of a class.  Here we are going to create a FT Employee class that is inherited from the class Farm_Worker that we just created.  We will then create a test to ensure it is working properly.
+
 #### Full Points
 For full points you need to write a similar function.
 ```{r Inherited_Class}
-setClass("FT Employee", contains = "Farm_Worker", representation(name="character"))
-aWorker2 <- new("FT Employee", ID=1, Crop_Skillset="corn", Multiple_Types=FALSE, name="Joe") 
+setClass("FT Employee", contains = "Farm_Worker", representation(name = "character"))
+aWorker2 <-
+  new(
+    "FT Employee",
+    ID = 1,
+    Crop_Skillset = "corn",
+    Multiple_Types = FALSE,
+    name = "Joe"
+  )
 
 # Test
 aWorker2
@@ -218,7 +296,7 @@ rm(cornWorkers)
 rm(wheatWorkers)
 rm(soybeanWorkers)
 rm(superWorkers)
-rm(workers) 
+rm(workers)
 rm(aSummary)
 rm(aTestCrop)
 rm(aNewTestCrop)
@@ -226,148 +304,252 @@ rm(aWorker2)
 ```
 Now let's build the simulator:
 ```{r Farm_Simulator}
-farmSim <- function(cornWorkers=0
-                    ,wheatWorkers=0
-                    ,soybeanWorkers=0
-                    ,multiSkilledWorkers=0
-                    ,workerSD=0
-                    ,cornFields=0
-                    ,wheatFields=0
-                    ,soybeanFields=0
-                    ,fieldSD=0
-                    ,yearsToSim=1) {
-  
+farmSim <- function(cornWorkers = 0,
+                    wheatWorkers = 0,
+                    soybeanWorkers = 0,
+                    multiSkilledWorkers = 0,
+                    workerSD = 0,
+                    cornFields = 0,
+                    wheatFields = 0,
+                    soybeanFields = 0,
+                    fieldSD = 0,
+                    yearsToSim = 1) {
   # Internal function to generate a work pool, with a normal distribution, for a year.  The work pool
   # changes are meant to simulate work force fluctuations.  Any negatives work force distributions are
   # voided out and set to zero.
-  workPool <- function(cornWorkers=0,wheatWorkers=0,soybeanWorkers=0,multiSkilledWorkers=0,workerSD=0) {
-    nbrWorkers <- round(rnorm(1,cornWorkers,workerSD))
-    if(nbrWorkers < 0) nbrWorkers = 0
-    workers <- Farm_Worker(1:nbrWorkers,rep("corn",nbrWorkers),rep(FALSE,nbrWorkers))
-    
-    anIndex <- nbrWorkers + 1
-    nbrWorkers <- round(rnorm(1,wheatWorkers,workerSD))
-    if(nbrWorkers < 0) nbrWorkers = 0
-    anEndIndex <- anIndex+nbrWorkers-1
-    newWorkers <- Farm_Worker(anIndex:anEndIndex,rep("wheat",nbrWorkers),rep(FALSE,nbrWorkers))
-    workers <- Add_Worker(workers,newWorkers)
-
-    anIndex <- anIndex + nbrWorkers +1
-    nbrWorkers <- round(rnorm(1,soybeanWorkers,workerSD))
-    if(nbrWorkers < 0) nbrWorkers = 0
-    anEndIndex <- anIndex+nbrWorkers-1
-    newWorkers <- Farm_Worker(anIndex:anEndIndex,rep("soybeans",nbrWorkers),rep(FALSE,nbrWorkers))
-    workers <- Add_Worker(workers,newWorkers)
-    
-    anIndex <- anIndex + nbrWorkers +1
-    nbrWorkers <- round(rnorm(1,multiSkilledWorkers,workerSD))
-    if(nbrWorkers < 0) nbrWorkers = 0
-    anEndIndex <- anIndex+nbrWorkers-1
-    newWorkers <- Farm_Worker(anIndex:anEndIndex,rep("multi",nbrWorkers),rep(TRUE,nbrWorkers))
-    workers <- Add_Worker(workers,newWorkers)
-    
-    return(workers)
-  }
+  workPool <-
+    function(cornWorkers = 0,
+             wheatWorkers = 0,
+             soybeanWorkers = 0,
+             multiSkilledWorkers = 0,
+             workerSD = 0) {
+      nbrWorkers <- round(rnorm(1, cornWorkers, workerSD))
+      if (nbrWorkers < 0)
+        nbrWorkers = 0
+      workers <-
+        Farm_Worker(1:nbrWorkers,
+                    rep("corn", nbrWorkers),
+                    rep(FALSE, nbrWorkers))
+      
+      anIndex <- nbrWorkers + 1
+      nbrWorkers <- round(rnorm(1, wheatWorkers, workerSD))
+      if (nbrWorkers < 0)
+        nbrWorkers = 0
+      anEndIndex <- anIndex + nbrWorkers - 1
+      newWorkers <-
+        Farm_Worker(anIndex:anEndIndex,
+                    rep("wheat", nbrWorkers),
+                    rep(FALSE, nbrWorkers))
+      workers <- Add_Worker(workers, newWorkers)
+      
+      anIndex <- anIndex + nbrWorkers + 1
+      nbrWorkers <- round(rnorm(1, soybeanWorkers, workerSD))
+      if (nbrWorkers < 0)
+        nbrWorkers = 0
+      anEndIndex <- anIndex + nbrWorkers - 1
+      newWorkers <-
+        Farm_Worker(anIndex:anEndIndex,
+                    rep("soybeans", nbrWorkers),
+                    rep(FALSE, nbrWorkers))
+      workers <- Add_Worker(workers, newWorkers)
+      
+      anIndex <- anIndex + nbrWorkers + 1
+      nbrWorkers <- round(rnorm(1, multiSkilledWorkers, workerSD))
+      if (nbrWorkers < 0)
+        nbrWorkers = 0
+      anEndIndex <- anIndex + nbrWorkers - 1
+      newWorkers <-
+        Farm_Worker(anIndex:anEndIndex,
+                    rep("multi", nbrWorkers),
+                    rep(TRUE, nbrWorkers))
+      workers <- Add_Worker(workers, newWorkers)
+      
+      return(workers)
+    }
   
   # This function is intended to dispense the multi-skilled workers when needed
-  requestMultiSkill <- function(nbrRequested,setInitialNumber=0,resetNumber=FALSE) {
-
-    if (resetNumber == TRUE) {
-      aMSWC <<- setInitialNumber
+  requestMultiSkill <-
+    function(nbrRequested,
+             setInitialNumber = 0,
+             resetNumber = FALSE) {
+      if (resetNumber == TRUE) {
+        aMSWC <<- setInitialNumber
+      }
+      
+      aResult <- 0
+      if (nbrRequested <= aMSWC) {
+        aResult <- nbrRequested
+        aMSWC <<- aMSWC - nbrRequested
+      } else {
+        aResult <- aMSWC
+        aMSWC <<- 0
+      }
+      
+      return(aResult)
     }
-    
-    aResult <- 0
-    if (nbrRequested <= aMSWC) {
-      aResult <- nbrRequested
-      aMSWC <<- aMSWC - nbrRequested
-    } else {
-      aResult <- aMSWC
-      aMSWC <<- 0
-    }
-    
-    return(aResult)
-  }
   
   # This is the core loop for the simulation
   for (i in 1:yearsToSim) {
-    aWorkPool <- workPool(cornWorkers,wheatWorkers,soybeanWorkers,multiSkilledWorkers,workerSD)
+    aWorkPool <-
+      workPool(cornWorkers,
+               wheatWorkers,
+               soybeanWorkers,
+               multiSkilledWorkers,
+               workerSD)
     aSummary <- Worker_Summary(aWorkPool)
-
+    
     # Number of multi-skilled crop workers.  These workers will be used after the crop specific workers
-    # have been depleted.  
-    nbrMultSkilledWorkers <- sum(aSummary[which(aSummary$multiSkill == TRUE),"Freq"]) 
-    mSW <- requestMultiSkill(0,nbrMultSkilledWorkers,TRUE)
-
-
+    # have been depleted.
+    nbrMultSkilledWorkers <-
+      sum(aSummary[which(aSummary$multiSkill == TRUE), "Freq"])
+    mSW <- requestMultiSkill(0, nbrMultSkilledWorkers, TRUE)
+    
+    
     # Start with Corn Sim
-    nbrFields <- round(rnorm(1,cornFields,fieldSD))
-    nbrWorkers <- aSummary[which((aSummary$crop=="corn") & (aSummary$multiSkill==FALSE)),"Freq"]
+    nbrFields <- round(rnorm(1, cornFields, fieldSD))
+    nbrWorkers <-
+      aSummary[which((aSummary$crop == "corn") &
+                       (aSummary$multiSkill == FALSE)), "Freq"]
     if (nbrFields < nbrWorkers) {
-      if(exists("aCrop") == TRUE) {
-        aNewCrop <- crops("corn",aCropYield = nbrFields, aYear=i, aFieldNumber = nbrFields)
+      if (exists("aCrop") == TRUE) {
+        aNewCrop <-
+          crops(
+            "corn",
+            aCropYield = nbrFields,
+            aYear = i,
+            aFieldNumber = nbrFields
+          )
         aCrop <- addCrops(aCrop, aNewCrop)
       } else {
-        aCrop <- crops("corn",aCropYield = nbrFields, aYear=i, aFieldNumber = nbrFields)
+        aCrop <-
+          crops(
+            "corn",
+            aCropYield = nbrFields,
+            aYear = i,
+            aFieldNumber = nbrFields
+          )
       }
     } else {
-      if(exists("aCrop") == TRUE) {
-        mSW <- requestMultiSkill(nbrFields-nbrWorkers)
-        aNewCrop <- crops("corn",aCropYield = nbrWorkers+mSW, aYear=i, aFieldNumber = nbrFields)
+      if (exists("aCrop") == TRUE) {
+        mSW <- requestMultiSkill(nbrFields - nbrWorkers)
+        aNewCrop <-
+          crops(
+            "corn",
+            aCropYield = nbrWorkers + mSW,
+            aYear = i,
+            aFieldNumber = nbrFields
+          )
         aCrop <- addCrops(aCrop, aNewCrop)
       } else {
-        mSW <- requestMultiSkill(nbrFields-nbrWorkers)
-        aCrop <- crops("corn",aCropYield = nbrWorkers+mSW, aYear=i, aFieldNumber = nbrFields)
+        mSW <- requestMultiSkill(nbrFields - nbrWorkers)
+        aCrop <-
+          crops(
+            "corn",
+            aCropYield = nbrWorkers + mSW,
+            aYear = i,
+            aFieldNumber = nbrFields
+          )
       }
     }
-
+    
     # Soybean Sim
-    nbrFields <- round(rnorm(1,soybeanFields,fieldSD))
-    nbrWorkers <- aSummary[which((aSummary$crop=="soybeans") & (aSummary$multiSkill==FALSE)),"Freq"]
+    nbrFields <- round(rnorm(1, soybeanFields, fieldSD))
+    nbrWorkers <-
+      aSummary[which((aSummary$crop == "soybeans") &
+                       (aSummary$multiSkill == FALSE)), "Freq"]
     if (nbrFields < nbrWorkers) {
-      aNewCrop <- crops("soybeans",aCropYield = nbrFields, aYear=i, aFieldNumber = nbrFields)
+      aNewCrop <-
+        crops(
+          "soybeans",
+          aCropYield = nbrFields,
+          aYear = i,
+          aFieldNumber = nbrFields
+        )
       aCrop <- addCrops(aCrop, aNewCrop)
     } else {
-      mSW <- requestMultiSkill(nbrFields-nbrWorkers)
-      aNewCrop <- crops("soybeans",aCropYield = nbrWorkers+mSW, aYear=i, aFieldNumber = nbrFields)
+      mSW <- requestMultiSkill(nbrFields - nbrWorkers)
+      aNewCrop <-
+        crops(
+          "soybeans",
+          aCropYield = nbrWorkers + mSW,
+          aYear = i,
+          aFieldNumber = nbrFields
+        )
       aCrop <- addCrops(aCrop, aNewCrop)
-    }                
+    }
     
     # Wheat Sim
-    nbrFields <- round(rnorm(1,wheatFields,fieldSD))
-    nbrWorkers <- aSummary[which((aSummary$crop=="wheat") & (aSummary$multiSkill==FALSE)),"Freq"]
+    nbrFields <- round(rnorm(1, wheatFields, fieldSD))
+    nbrWorkers <-
+      aSummary[which((aSummary$crop == "wheat") &
+                       (aSummary$multiSkill == FALSE)), "Freq"]
     if (nbrFields < nbrWorkers) {
-      aNewCrop <- crops("wheat",aCropYield = nbrFields, aYear=i, aFieldNumber = nbrFields)
+      aNewCrop <-
+        crops(
+          "wheat",
+          aCropYield = nbrFields,
+          aYear = i,
+          aFieldNumber = nbrFields
+        )
       aCrop <- addCrops(aCrop, aNewCrop)
     } else {
-      mSW <- requestMultiSkill(nbrFields-nbrWorkers)
-      aNewCrop <- crops("wheat",aCropYield = nbrWorkers+mSW, aYear=i, aFieldNumber = nbrFields)
+      mSW <- requestMultiSkill(nbrFields - nbrWorkers)
+      aNewCrop <-
+        crops(
+          "wheat",
+          aCropYield = nbrWorkers + mSW,
+          aYear = i,
+          aFieldNumber = nbrFields
+        )
       aCrop <- addCrops(aCrop, aNewCrop)
-    }        
-
+    }
+    
   }
   
-  cat("\nCrop Yield Mean: ",cropMean(aCrop),"\n\n")
+  cat("\nCrop Yield Mean: ", cropMean(aCrop), "\n\n")
   
   cat("Yearly Projected Simulation Means: \n")
   print(cropYearlyMean(aCrop))
   
-  cat("\n\nYearly Projected Simulation Details\n") 
+  cat("\n\nYearly Projected Simulation Details\n")
   print(aCrop)
   
   return(aCrop)
 }
 
-a <- farmSim(cornWorkers=100
-             ,wheatWorkers=100
-             ,soybeanWorkers=100
-             ,multiSkilledWorkers=20
-             ,workerSD=5
-             ,cornFields=100
-             ,wheatFields=120
-             ,soybeanFields=125
-             ,fieldSD=5
-             ,yearsToSim=5)
-
+a <- farmSim(cornWorkers = 100,
+             wheatWorkers = 100,
+             soybeanWorkers = 100,
+             multiSkilledWorkers = 20,
+             workerSD = 5,
+             cornFields = 100,
+             wheatFields = 120,
+             soybeanFields = 125,
+             fieldSD = 5,
+             yearsToSim = 5
+)
 
 ```
+#### Testing Farm Simulation
 
+Now let's test it out with:
+
+- cornWorkers = 100
+
+- wheatWorkers = 100
+
+- soybeanWorkers = 100
+
+- multiSkilledWorkers = 20
+
+- workerSD = 5
+
+- cornFields = 100
+             
+- wheatFields = 120
+
+- soybeanFields = 125
+             
+- fieldSD = 5
+
+- yearsToSim = 5
