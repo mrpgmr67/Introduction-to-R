@@ -1,10 +1,12 @@
-#####################################################################################
-# 
-#   Data 710:  Introduction to R
-#   Michael S. Pomatto  (mpomatto@davenport.edu)
-#   Week 8: Input/Output
+##########################################################################
+# Data 710: Introduction to R
+# Week 8: Assignment - Input / Output
 #
-#####################################################################################
+# GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
+#
+##########################################################################
+
+setwd("D:/Davenport/Data 710 Scripts/Data")                      # Don't forget to set to your working directory to find the files
 #
 #  Sample.txt and Sample.CSV are both in the working directory.  If they are not, you would either have
 #  to include the path to get there or you would have to set your working directory to the location of the files

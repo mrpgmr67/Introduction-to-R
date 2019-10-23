@@ -1,0 +1,71 @@
+---
+title: "Week 8 - Input / Output"
+output:
+  html_notebook: default
+---
+```{r setup}
+knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")
+```
+In previous weeks, the course briefly discussed the import and export of data. This week will take an even more in-depth look at the ability for R to import and export data files. This includes both local copies of data as well as access to online sources.
+
+This week's assignment is about creating a farming simulation.
+
+## Weekly Learning Objectives
+Create an R script with the following components:
+
+1. Build a simple R program to read in data from a file and save the results into a data frame.
+2. Build a function to read data from a web-URL.
+
+- Use the public archive data on Relative CPU performance: 
+- URL: http://archive.ics.uci.edu/ml/machine-learning-databases/
+- Dataset: machine.data
+- Name File: machine.names
+
+3.  Build a simple lookup function for CPU performance. Assume the data will be pulled from the same URL, and that data is updated on a frequent basis. Given a vendor name turn the following results:
+
+- A message if the vendor is not found (based on previous experience in the data)
+- Vendor published relative performance (PRP) and estimated relative performance (ERP)
+- If the vendor is the best in category, return a flag that they are the best. For example, "Best in Published Relative Performance".
+- If they are not the best in category, return the vendor is the best including the PRP and ERP numbers.
+
+
+## 1. Read data into a data frame
+This is simply a load into a data frame.  There are multiple ways of solving this question.
+
+#### Full Points
+Load data into a data frame.  You may also want to print off the results and use the class() function to check to make sure it's a data frame.  
+```{r Read_DataFrame}
+sample_dataframe <- read.csv("sample.txt", header = TRUE,sep="\t")    #  First row is a header.  
+                                                                      #  Field separated by a tab (\t)
+class(sample_dataframe)    # If it worked it will say data.frame
+```
+## 2. Read data from a web URL
+This simply extends the function to pull from a web address.  Here I will use the 
+
+#### Full Points
+Load data into a data frame from a web link.  You may also want to print off the results and use the class() function to check to make sure it's a data frame.  
+
+#### Red Wine Data
+```{r Red_Wine}
+RED_URL <-"http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+RED_data <- read.csv(RED_URL, header = TRUE, sep = ";")                                                             
+head(RED_data)
+```
+#### White Wine Data
+```{r White_Wine}
+WHITE_URL <-"http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
+WHITE_data <- read.csv(WHITE_URL, header = TRUE, sep = ";")  
+head(WHITE_data)
+```
+## 3. Lookup Function
+This comes down to a simple sort
+- A message if it is not found
+- Top record / bottom record
+- Best in category
+
+```{r Lookup_Function}
+
+sorted_red <- RED_data[order(11),]
+sorted_red
+```
+
