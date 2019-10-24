@@ -1,10 +1,12 @@
 ---
 title: "Week 8 - Input / Output"
 output:
+  pdf_document: default
   html_notebook: default
 ---
 ```{r setup}
 knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")
+library(dplyr)                                                      # going to use this for the arrange function
 ```
 In previous weeks, the course briefly discussed the import and export of data. This week will take an even more in-depth look at the ability for R to import and export data files. This includes both local copies of data as well as access to online sources.
 
@@ -63,9 +65,41 @@ This comes down to a simple sort
 - Top record / bottom record
 - Best in category
 
-```{r Lookup_Function}
+This can be solved in a number of ways.  
 
-sorted_red <- RED_data[order(11),]
-sorted_red
+#### Full Points
+Create a function that will take at least one parameter of the Vendor.  It should return a message if the vendor is not found.  It should return the top and bottom vendor for each category (best in category)
+
+#### Demonstration using Wine Data
+These statements will use the dplyr package to perform these functions.  You can also use the sort() function.  This should be dropped into a function with if/then statements.  
+
+Pseudo Code:
+- Lookup vendor.  If vendor does not exist return a message
+- Sort and store the top
+- Sort and store the bottom
+- Do a compare to see if they are the top
+- Return top, bottom, and whether or not they were the top
+
+First let's look at sorting. This will sort the red wine dataset by alcohol content in a descending order:
+```{r Lookup_Function_desc_sort}
+sorted_red <- arrange(RED_data, desc(alcohol))
+sorted_red$generated_uid <- 1:nrow(sorted_red)    # This will create a unique identifier for each record 
+head(select(sorted_red, generated_uid, alcohol), 25)
 ```
+Next let's do the same but sort in a ascending order
+```{r Lookup_Function_asc_sort}
+sorted_red <- arrange(sorted_red, alcohol)
+head(select(sorted_red, generated_uid, alcohol), 25)
+```
+So at this point, the generated_uid of 1 is the record with the highest alcohol, and that with the record of 1598 is the lowest one.  You can then do a comparison to see if the record is included in the dataset.  In this example, I would compare against the generated_uid to see if the number is under 1598 (meaning it is in the dataset).
 
+For your function, the key fields are:
+
+- Vendor_Name
+- PRP
+- ERP
+
+1. First to see if the parameter you pass in matches a Vendor_Name in the dataset.  If it does not, return an error message.  
+2. Sort your data by PRP and capture the top and bottom
+3. Sort your data by ERP and capture the top and bottom
+4. Do comparisons to see if the vendor name you gave as the parameter matches one of these two.  It becomes a simple if-then-else statement
