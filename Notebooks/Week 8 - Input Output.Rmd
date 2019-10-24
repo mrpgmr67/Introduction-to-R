@@ -10,8 +10,6 @@ library(dplyr)                                                      # going to u
 ```
 In previous weeks, the course briefly discussed the import and export of data. This week will take an even more in-depth look at the ability for R to import and export data files. This includes both local copies of data as well as access to online sources.
 
-This week's assignment is about creating a farming simulation.
-
 ## Weekly Learning Objectives
 Create an R script with the following components:
 
