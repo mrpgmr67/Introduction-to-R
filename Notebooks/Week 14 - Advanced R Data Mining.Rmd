@@ -1,0 +1,211 @@
+---
+title: "Week 14 Advanced R Data Mining"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+```{r setup}
+knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")
+library("dplyr")      # Data manipulation
+library("tidyr")      # Tidying the data
+library("validate")   # Data validation
+library("magrittr")   # To use for %>% (pipes)
+library("party")      # Creating the decision tree
+library("DMwR")       # Data Mining with R package
+```
+There are many topics that would fall into advanced uses of R. This week is dedicated to the creation of an R application to do data mining. Students will explore data mining in detail in other courses, but this will give them hands on experience with the R code to do it. This is valuable for use as a data mining exercise, but it also tests the student on just about every aspect of the language both from a statistical perspective as well as a data manipulation. It serves as an excellent final test for the student.
+
+In this week's assignment, we will walk through an entire data mining project.  It will include both supervised and unsupervised examples, with the final output being a clustered dataset.
+
+## Weekly Learning Objectives
+Create an R script focused on data mining with the following components:
+
+1. Definition of the sample file and some initial statistical information.
+2. The creation of a decision tree to further analyze the data.
+3. Outlier detection
+4. K-means clustering of the data
+5. Output of the results to a text file, or separate text files for each cluster
+
+
+## 1. Initial statistical information 
+Any data mining project should start with exploratory data analysis (EDA).  While there could be a lot of additional steps in this section, for the purposes of this exercise we will simply load the data file and do some initial stats on it.  We will also run it through validation to ensure that our data quality checks are met.  In a real-world example, this would have numerous additional steps.  
+
+This will give us a general idea of the dataset, and help to determine what factors are of greatest interest.
+
+#### Full Points
+Load the data and perform some basic stats on it.  That can be done manually, or through a combination of plots and even the use of the validation library from earlier exercises.  
+```{r basic_stats}
+phoneRawData <- read.csv("Phone Records.csv")
+
+# Describe the data - Summary
+head(phoneRawData)
+tail(phoneRawData)
+summary(phoneRawData)
+
+var(phoneRawData$Fixed.Calls)
+var(phoneRawData$Duration)
+var(phoneRawData$Mobile)
+var(phoneRawData$International)
+var(phoneRawData$Broadband)
+
+# Check for invalid fields
+aCheck <- check_that(phoneRawData,
+                     !is.na(Fixed.Calls), 
+                     !is.na(Duration),
+                     !is.na(Mobile),
+                     !is.na(International),
+                     !is.na(Broadband))
+print(summary(aCheck))
+
+# Visually describe the data
+barplot(aCheck, main="NA Check")
+
+boxplot(phoneRawData$Fixed.Calls,
+        phoneRawData$Duration,
+        phoneRawData$Mobile,
+        phoneRawData$International,
+        phoneRawData$Broadband,
+        las = 2,
+        main = "Overall Comparison",
+        names=c("Fixed Calls","Duration","Mobile","International","Broadband"))
+
+# Individual Boxplots
+par(mfrow=c(2,3))
+boxplot(phoneRawData$Fixed.Calls,main="Fixed Calls")
+boxplot(phoneRawData$Duration,main="Duration")
+boxplot(phoneRawData$Mobile,main="Mobile")
+boxplot(phoneRawData$International,main="International")
+boxplot(phoneRawData$Broadband,main="Broadband")
+par(mfrow=c(1,1))   #Reset graph window
+
+# Histograms
+par(mfrow=c(2,3))
+hist(phoneRawData$Fixed.Calls,main="Fixed Calls",xlab="")
+hist(phoneRawData$Duration,main="Duration",xlab="")
+hist(phoneRawData$Mobile,main="Mobile",xlab="")
+hist(phoneRawData$International,main="International",xlab="")
+hist(phoneRawData$Broadband,main="Broadband",xlab="")
+par(mfrow=c(1,1))   #Reset graph window
+
+plot(phoneRawData)
+```
+
+## 2. Create a decision tree
+
+We have created decision trees earlier in the course using more of a manual approach.  Now we will shift to using one of the package libraries.  For this, we want to run our dataset through and build out a decision tree.  This example will demonstrate the minimum necessary to produce a tree.  There are a lot of additional steps that can be introduced to make it even better.  A good discussion of creating decision trees in R can be found here:
+
+https://www.datacamp.com/community/tutorials/decision-trees-R
+
+
+#### Full Points
+Generate a simple decision tree, either through a manual process as before or by using a library call such as show below.
+```{r decision_tree}
+phoneDataPivot <- gather(phoneRawData,key=Call.Type,value="Length",Fixed.Calls,Duration,Mobile,International,Broadband,-ID,factor_key=TRUE)
+
+phoneTree <- ctree(Call.Type ~ Call.Type, data=phoneDataPivot)
+plot(phoneTree, las=2)
+
+rm(phoneDataPivot)
+rm(phoneTree)
+```
+
+## 3. Outlier detection
+
+Understanding outliers is crucial to a properly tuned model.  There may be instances when you would include or exclude an outlier.  This is another spot where a package can make it much easier.  A detailed discussion on outlier detection can be found here:
+
+http://www.rdatamining.com/examples/outlier-detection
+ 
+
+#### Full Points
+Include outlier detection in your script, either through a manual process or by using a package.  In this example, we will use a package.
+
+```{r outlier_detection}
+phoneData <- select(phoneRawData,Fixed.Calls,Duration,Mobile,International,Broadband)
+
+# Individual variable outliers
+
+# Fixed Calls
+boxplot.stats(phoneData$Fixed.Calls)$out
+# Duration
+boxplot.stats(phoneData$Duration)$out
+# Mobile
+boxplot.stats(phoneData$Mobile)$out
+# International
+boxplot.stats(phoneData$International)$out
+# Broadband
+boxplot.stats(phoneData$Broadband)$out
+
+# Multi-variant outlier detection
+outlier.scores <- lofactor(phoneData, k=10)
+plot(density(outlier.scores, na.rm=TRUE))
+
+# Top Multi-variant Outliers
+outliersOrdered <- order(outlier.scores, decreasing=T)[1:100]
+
+# Location of the top outliers
+outliersOrdered
+phoneData.outliersRemoved <- phoneData[-outliersOrdered,]        # Not used but kept as an example
+```
+
+## 4. Perform a K-means clustering
+
+Having worked out the outliers, it is now time to run it through a clustering algorithm.  The k-means is probably the most common one for this type of task.  For this example, we will wrap it in a function and perform successive plots.  Then we will perform primary component analysis (PCA) to determine the variables for clustering.  Based on our results from the first two steps, it looks like a cluster size of 4 is appropriate for this data.  We will run the kmeans and then graph out those results.
+
+A detailed discussion of k-means clustering in R can be found at this link:
+
+https://www.datacamp.com/community/tutorials/k-means-clustering-r
+
+#### Full Points
+Perform a k-means clustering.  To do that, you will have to run a PCA analysis to determine which variables are appropriate, and you will have to perform a few plots to display it.  The expectation is that it will be relatively accurate.  It is not expected to be fully tuned.
+
+```{r k_means}
+wssplot <- function(wssData, numClust=12, seed=12345){
+  wss <- (nrow(wssData)-1)*sum(apply(wssData,2,var))
+  for (i in 2:numClust){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(wssData, centers=i)$withinss)
+  }
+  plot(1:numClust, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
+}
+
+# Run PCA analysis to identify variables for clustering
+model <- prcomp(phoneData,center=TRUE, scale = TRUE)
+summary(model)
+plot(model,main="",col="blue")
+biplot(model,scale=0, cex=.7)
+
+pairs(phoneData)
+
+# Remove Broadband & International
+phoneDataScale <- select(phoneData,Fixed.Calls,Duration,Mobile)
+
+# Estimate the number of clusters for Kmeans
+wssplot(phoneDataScale)
+
+# Create clusters
+(clust <- kmeans(phoneDataScale, 4))
+plot(phoneDataScale, col = clust$cluster)                         # Visually check clusters
+points(clust$centers, col = 1:4, pch = 8, cex = 2)
+
+# Add cluster data to the phone data
+phoneDataCluster <- cbind(phoneRawData,clust$cluster)
+
+# Fix clust$cluster name
+colnames(phoneDataCluster) <- c(names(phoneRawData[1,1:6]),"Cluster")
+head(phoneDataCluster)
+```
+
+## 5. Output to a text file
+
+The final step is probably the easiest.  Write the results out to a file, indicating the cluster for each data element.
+
+#### Full Points
+The output should include the data element and the cluster.
+
+```{r output_textfile}
+# Sort data
+phoneDataCluster <- arrange(phoneDataCluster,Cluster,ID)
+head(phoneDataCluster)
+
+write.csv(phoneDataCluster, file = "Phone Records with Cluster.csv")
+```
