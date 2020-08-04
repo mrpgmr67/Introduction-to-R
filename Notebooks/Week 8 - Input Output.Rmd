@@ -101,3 +101,6 @@ For your function, the key fields are:
 2. Sort your data by PRP and capture the top and bottom
 3. Sort your data by ERP and capture the top and bottom
 4. Do comparisons to see if the vendor name you gave as the parameter matches one of these two.  It becomes a simple if-then-else statement
+
+
+Reviewed for 2020 - MSP

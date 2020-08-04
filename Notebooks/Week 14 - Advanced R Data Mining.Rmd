@@ -208,3 +208,5 @@ head(phoneDataCluster)
 
 write.csv(phoneDataCluster, file = "Phone Records with Cluster.csv")
 ```
+
+Reviewed for 2020 - MSP

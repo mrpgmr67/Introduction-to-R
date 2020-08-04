@@ -354,3 +354,4 @@ sim_90 <- inventorySimulation(10000,0.90)
 sim_50 <- inventorySimulation(10000,0.50)
 ```
 
+Reviewed for 2020 - MSP

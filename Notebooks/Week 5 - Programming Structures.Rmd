@@ -459,3 +459,4 @@ dosim(terminalInitGlbls,terminalEvent,terminalSimResultsPrint,720,list(arrvrate=
 dosim(terminalInitGlbls,terminalEvent,terminalSimResultsPrint,720,list(arrvrate=5,arrvsd=1,srvrate=45,srvsd=10))
 ```
 
+Reviewed for 2020 - MSP

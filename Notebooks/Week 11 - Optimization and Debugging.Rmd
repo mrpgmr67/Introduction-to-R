@@ -151,3 +151,5 @@ system.time(vector_wheel <- c(sample(Roulette,size=sample_size*repeat_samples,re
 #    user  system elapsed 
 #    0.01    0.00    0.02         <--- Much faster
 ```
+
+Reviewed for 2020 - MSP
