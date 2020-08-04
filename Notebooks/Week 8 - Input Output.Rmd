@@ -78,7 +78,7 @@ Pseudo Code:
 - Do a compare to see if they are the top
 - Return top, bottom, and whether or not they were the top
 
-First let's look at sorting. This will sort the red wine dataset by alcohol content in a descending order:
+First look at sorting. This will sort the red wine dataset by alcohol content in a descending order:
 ```{r Lookup_Function_desc_sort}
 sorted_red <- arrange(RED_data, desc(alcohol))
 sorted_red$generated_uid <- 1:nrow(sorted_red)    # This will create a unique identifier for each record 

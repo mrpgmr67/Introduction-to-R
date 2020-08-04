@@ -2,7 +2,6 @@
 title: "Week 14 Advanced R Data Mining"
 output:
   pdf_document: default
-  html_notebook: default
 ---
 ```{r setup}
 knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")

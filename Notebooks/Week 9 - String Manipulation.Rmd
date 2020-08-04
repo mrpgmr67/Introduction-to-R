@@ -2,7 +2,6 @@
 title: "Week 9 String Manipulation"
 output:
   html_notebook: default
-  pdf_document: default
 ---
 ```{r setup}
 knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")

@@ -91,7 +91,7 @@ The following function implements a more "traditional" quicksort algorithm using
 #### pseudo code
 - store position
 - using the index of the vector, determine if a swap is needed or not
-- swap where approriate
+- swap where appropriate
 - repeat until the end position
 
 This function also uses recursion, meaning that it calls itself as part of the process.

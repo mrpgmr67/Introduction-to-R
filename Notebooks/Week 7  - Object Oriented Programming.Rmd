@@ -20,7 +20,7 @@ Create an R script with the following components:
 3. Create an inherited class based on one of the classes you have created.
 4. Build a farming simulation based on the combination of both workers and crops.  Use the classes that were created in the previous steps and have it set to calculate yearly projections. Create input variables for each of the components, and run the simulation for a five year cycle.
 
-## 1. Create a S3 class for Crops
+## 1. Create a S3 class for Crops (Farming Simulation)
 
 S3 classes are one of the most tricky things to master in R.  For those who may be familiar with object oriented programming language, the S4 class may be slightly easier to implement.  In addition to the text, I would strongly encourage you to read the R documentation sections:
 

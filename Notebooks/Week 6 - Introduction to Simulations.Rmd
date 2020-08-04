@@ -15,7 +15,7 @@ In the previous weeks, data and control structures were discussed in great detai
 ```{r setup}
 library(ggplot2)
 ```
-## 1. Probability of Ace Card Simulation
+## 1. Probability of Ace - Card Simulation
 It is based on the fact that a deck will have four aces in it.  We are going to assign the numbers 13, 26, 39, and 52 the values to be aces in the simulation.  Then it becomes a case of using the modulus operator.  As you will remember from our earlier exercise where you encountered it, it will let you know if the number is divisible by the value (X %% 10 will equal 0 if X is a multiple of 10).  Testing against one of the multiples of 13 will confirm that you have found an ace.  Once you have that function established, then you simply have to loop through it as many attempts as you request and keep track of the total count.
 
 - drawAce is base function to determine if something is an ace
