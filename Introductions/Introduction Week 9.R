@@ -2,9 +2,12 @@
 # 
 #   Data 710:  Introduction to R
 #   Michael S. Pomatto  (mpomatto@davenport.edu)
-#   Week 9: String Manipulation
+#   Week 6 - Introduction to Simulations
 #
-#####################################################################################
+#   GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
+#
+##########################################################################
+setwd("D:/Davenport/Data 710 Scripts/Data")                      # Don't forget to set to your working directory to find the files
 
 #  This example will use the PDF Tools library (pdftools)
 #  You can install it with the command install.packages("pdftools")
