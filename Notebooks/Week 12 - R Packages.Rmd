@@ -1,0 +1,218 @@
+---
+title: "Week 12 R Packages"
+output:
+  html_notebook: default
+---
+```{r setup}
+knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")
+library(validate)
+library(magrittr)
+```
+Introduction GOES HERE.
+
+## Weekly Learning Objectives
+Create an R script with the following components:
+
+1. Create a new RMarkdown document
+2. Insert the R code produced for the Central Limit Theorem example (make sure echo is off)
+3. Include the four graphs as part of the document
+4. Create a R function within the document to generate basic statistics on one of the sample built-in data sets (make sure echo is turned on)
+5. Use Knitr to generate a PDF or document file.  If necessary install any dependencies
+6. Create a R script that utilizes at least five functions (each) found in these packages:
+- Dplyr - Data Manipulation
+- Tidyr - Data Manipulation
+- GGPlot2 - Graphics
+
+## 1. Create a new RMarkdown document.
+The document has been created, and I am now completing the week 12 assignment within R Markdown.
+
+## 2. and 3. CLT and graphs
+```{r echo = FALSE}
+Roulette<-c(0:36)
+CLT_Data<-Roulette
+sample_size<-100
+repeat_samples<-1000
+
+for(i in 1:repeat_samples){
+  clt_y<-sample(CLT_Data,size=sample_size,replace=TRUE)
+  if (exists("sample_x")==TRUE){
+    clt_z <- data.frame(a=c(mean(clt_y)),b=c(sd(clt_y)))
+    sample_x <- rbind(sample_x,clt_z)
+    rm(clt_z)
+  }else{
+    sample_x <- data.frame(a=c(mean(clt_y)),b=c(sd(clt_y)))
+  }
+  if (exists("loop_wheel")==TRUE){
+    clt_e <- c(clt_y)
+    loop_wheel <- rbind(loop_wheel,clt_e)
+    rm(clt_e)
+  }else{
+    loop_wheel <- c(clt_y)
+  }
+}
+```
+
+The code was input with ECHO turned off so it will not appear in the document. The resulting graphs display the following: **(1)** Shows the distribution of numbers on a roulette wheel for reference. **(2)** Shows the distribution of the mean for the 1,000 simulations. **(3)** Shows the distribution of the standard deviation among the 1,000 simulations. **(4)** Shows the distribution of numbers resulting in all simulated spins of the wheel. Notice the first bar is higher in graph (4). This is because it consists of three numbers (0,1 and 2), while the other bars each consist of only two numbers.
+
+```{r echo=FALSE}
+par(mfrow=c(2,2))
+
+hist(CLT_Data,xlab="Number",main="(1) Roulette Wheel Distribution",col = "Red")
+hist(sample_x$a, xlab="Sample Mean",main="(2) Distribution of Mean", col = "Green")
+hist(sample_x$b, xlab="(3) Sample Standard Deviation",main="Distribution of Standard Deviation",col = "Blue")
+hist(loop_wheel,xlab="Number",main="(4) Sample Distribution",col = "Pink")
+```
+
+
+## 4. Create a R function within the document to generate basic statistics on one of the sample built-in data sets. 
+### * Please make sure the ECHO is turned on for this piece of code.
+
+I will genererate a summary of basic statistics from the "trees" data set.
+
+```{r}
+summary(trees)
+```
+
+
+## 5. Use Knitr to generate a PDF or document file.
+### * If necessary, install any dependent libraries in R-Studio.
+I will use Knitr to generate an HTML document.
+
+## 6. Create a R script that utilizes at least five functions (each) found in these packages:
+### * Dplyr - Data Manipulation
+### * Tidyr - Data Manipulation
+### * Ggplot2 - Graphics
+
+#### *dplyr*
+As I explore the functions of dplyr, I will use echo = FALSE.
+
+##### **Function 1: filter()**
+Revisiting the "trees" dataset, I can use the filter() function to find only the rows that exceed the mean of all three variables.  This will be done with the call, filter(trees, Girth > 13.25, Height > 76, Volume > 30.17). Only 9 of the 31 trees meet this criteria:
+
+```{r include = FALSE}
+library(dplyr)
+```
+
+```{r echo = FALSE}
+filter(trees, Girth > 13.25, Height > 76, Volume > 30.17)
+```
+
+##### **Function 2: arrange()**
+The trees data is presented in the order of their Girth by default. With this function, I can change that to prioritize Height first and volume second with the function, arrange(trees,Height,Volume).
+
+```{r echo = FALSE}
+  arrange(trees,Height,Volume)
+```
+
+##### **Function 3: select()**
+The select() function only displays the called columns. I will use this along with the filter() function to only display the Volume for trees that have Volume greater than 40:
+
+```{r echo = FALSE}
+  t <- filter(trees, Volume > 40)
+  select(t,Volume)
+```
+
+##### **Function 4: mutate()**
+Let's explore the "women" data set. I will add a column titled 'BMI', which will calculate the body mass index with the formula, 703 multiplied by weight and divided by height squared:
+
+```{r echo = FALSE}
+  mutate(women,BMI = 703*weight/(height^2))
+```
+
+##### **Function 5: summarise()**
+A helpful way to use the summarise() function would be in connection with the mutate() function, as you can gain summary information on a new column. I was able to use this to find the mean of the new BMI column that was created:
+
+```{r echo = FALSE}
+  bmi <- mutate(women,BMI = 703*weight/(height^2))
+  summarise(bmi, BMI.mean = mean(BMI,na.rm = TRUE))
+```
+
+#### *tidyr*
+```{r include = FALSE}
+  library(tidyr)
+```
+As I explore the functions for tidyr, I will leave echo turned on.
+
+##### **Function 1: separate()**
+The data set "smiths" from tidyr has Full names listed under the column title, subject.  This can be split into two columns for first and last names using the separate() function:
+
+```{r}
+  smiths
+  separate(smiths, subject, c("First", "Last"), sep = " ")
+```
+
+##### **Function 2: unite()**
+If the smiths started with separated names, and it would be more functional with the names combined into one column, the opposite action can be taken with the unite() function. I named the new version of the table "smith2" and will convert it back. I will title the column "Name" and separate the names with an underscore:
+
+```{r}
+  smith2 <- separate(smiths, subject, c("First", "Last"), sep = " ")
+  smith2
+  unite(smith2, "Name",c(First, Last), sep = "_")
+```
+##### **Function 3: spread()**
+The data set "population" from tidyr has population data of countries from 1995 to 2013. It is compiled in only 3 columns, causing it to be 4,060 rows. By spreading the data into columns based on years, this number can be reduced to 219 rows with 20 columns:
+
+```{r}
+  population
+  spread(population, year, population)
+```
+
+##### **Function 4: gather()**
+The gather() function does the opposite of the spread() function. In this example, I will use the "table4a" data set from tidyr. It is a portion of data collected from the World Health Organization Global Tuberculosis Report.  The gather() function will be used to stack years into a single column by creating a new column titled "TB_cases":
+
+```{r}
+  table4a
+  gather(table4a, year, TB_cases, '1999':'2000')
+```
+
+##### **Function 5: replace_na()**
+The "smiths" data set contains missing values for Mary Smith. I will use the replace_na() function to replace "NA" with "unknown":
+```{r}
+  smiths
+  replace_na(smiths, list(age = "unknown", weight = "unknown"))
+```
+
+#### *ggplot2*
+```{r include = FALSE}
+  library(ggplot2)
+```
+
+I will continue to leave echo turned on as I explore the ggplot2 package.
+##### **Function 1: qplot()**
+
+Using the "mpg" data ser, I will use the qplot() function to compare miles per gallon to the engine displacement in litres. I will create one plot color coordinated based on the class of car (midsize, compact, etc.). The other plot will be color coordinated based on a car being front wheel drive, back wheel drive, or 4 wheel drive:
+
+```{r}
+  qplot(displ, hwy, color = class, data = mpg)
+  qplot(displ, hwy, color = drv, data = mpg)
+```
+
+##### **Function 2: ggplot() + geom_point() + geom_smooth()**
+Using the iris data set, I will compare sepal length to sepal width and include a trend line for each of the three species:
+
+```{r}
+  ggplot(iris, aes(x=Sepal.Width, y=Sepal.Length, color = Species)) + geom_point() + geom_smooth(se=FALSE)
+```
+
+
+
+##### **Function 3: ggplot() + geom_histogram()**
+The "diamonds" data set contains the prices of 50,000 round cut diamonds. Using the ggplot() with the geom_histogram(), I will generate a histogram with price as the x axis, and the count as the y axis. I will add a fill to color code the clarity of the diamonds within the graph. I will also reduce the binwidth to 250:
+
+```{r}
+ggplot(diamonds, aes(x=price, fill=clarity)) + geom_histogram(binwidth=250)
+```
+
+##### **Function 4: ggplot() + geom_density()**
+Staying with the "diamonds" data set, I will now generate a color coded plot to show the density of the price of a diamond based on the color of the diamond:
+
+```{r}
+  ggplot(diamonds, aes(x=price, color=color)) + geom_density()
+```
+
+##### **Function 5: ggplot() + geom_point()**
+Finally, I will compare price to the carat of the diamonds via a scatter plot, while also taking into account the cut of the diamond through color coding:
+
+```{r}
+  ggplot(diamonds,aes(price,carat)) + geom_point(aes(color=cut))
+```
