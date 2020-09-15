@@ -5,35 +5,33 @@
 #
 ##########################################################################
 
-# Create a simple matrix
-m <- matrix(c(1,2,3,4,5,6), nrow=2, byrow=T)   # Six elements, two rows
 
-m
+#  ASSIGNMENT - Binary time predictor
+#     Binary - one of two possible outcomes (0,1), (TRUE, FALSE), (HEADS, TAILS)
+#     Discrete value - Individually separate and distinct.  Opposite of continuous
+#     Time series
 
-# Use the structure function to describe it
-str(m)
+a <-c(0,1,0,0,0,0,1,1,0,1,0,0,1,1,0,1,0,1,0,0,0,0,1,1,1,0,0,1,0,1,0,1,1,0,0)  # This is the series
+b <- 4
 
-# Use the apply function to generate a mean
-# m = vector
-# 2 = dimcode (1 for row and 2 for column)
-# mean = function
-# fargs = arguments (not used in this example)
-apply(m,2,mean)
+#  One possible solution.... pseudo code
 
-# Create a new matrix by binding together c and d  (cbind for column / rbind for row)
-f <- cbind(c,d)   # Bind columns
-f1 <- rbind(c,d)  # Bind rows
+#  Let's say I want to predict the Fourth element
+#  1.  Determine the length of the vector
+#  2.  Figure out what half of the length is for that vector
+#  3.  Create a placeholder.  Set initial position to (total vector length - element you want to predict.  In this case 4)
+#  4.  Store the sum of values from element 1 to element you want to predict.  In this case 4 so (0,1,0,0) = 1
+#  5.  If that sum is greater than the half mark, set predictor to 1.  Otherwise set predictor to 0
+#  6.  Create a for loop to iterate through the series.  Again setting the predictor to 1 or 0 as appropriate
+#  7.  Ensure you include safety checks to make sure you don't get negative numbers or numbers greater than 1
+#  8.  If using this technique, you return the mean of the absolute value of values observed.  ABS will make sure you don't have a negative
 
-# Bind names to the columns for f of Start and End
-colnames(f) <-c("Start", "End")
+time_predictor(a,b)
 
-# Return the attribute names of f
-attributes(f)
 
-# Create an array of both matrices 
-g <- array(data=c(m,f),dim=c(3,2,2))
 
-attributes(g)
 
-# Print off second column of matrix
-g[,2,]
+
+
+
+
