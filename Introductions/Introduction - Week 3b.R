@@ -5,7 +5,7 @@
 #
 ##########################################################################
 
-setwd("D:/Davenport/Data 710 Scripts/Data")                      # Don't forget to set to your working directory to find the files
+setwd("D:/Davenport/Data 710 Scripts")                      # Don't forget to set to your working directory to find the files
 
 #  Creating a simple data frame
 x <- c(seq(1:10))
@@ -27,3 +27,61 @@ e
 sample_data <-read.csv("sample.csv")
 barplot(sample_data$Amount)
 summary(sample_data$Amount)
+
+
+
+aList$V_Input[i] <- ifelse((aList$ID[i] %% 2) == 0, FALSE, TRUE)
+
+
+#  THE ASSIGNMENT
+#
+#
+#
+#  1.  Create a list
+#  ID - Numeric 1 to 100
+#  Category - Character
+#  V_Input - Boolean
+#  Sample 100 records    hint:  use seq() function
+
+
+#  2.  Create a function to populate V_Input with TRUE if the ID is odd and FALSE if the id is even
+#
+#   Use ifelse() and the modulus operator %%
+#                        if modulus 2 == 0 then you know it is even
+
+#  3.  Word frequencies
+#      several possible solutions:  
+#          quanteda library    http://quanteda.io/
+#          tm library
+#          create your own function.  
+#      
+#       bar plot     
+#       barplot(wordCnt$wordFreq,xlab="Words", ylab="Frequency (count)" )
+
+#  4.  read.csv()        We have done this multiple times so far
+
+#  5.  Linear regression
+
+
+library(lattice)
+
+# Example of a good linear relationship
+xyplot(iris$Petal.Length ~ iris$Petal.Width)                            # Simple scatter plot
+xyplot(iris$Petal.Length ~ iris$Petal.Width | iris$Species)             # Scatter broken down by species
+
+simpleIrisRegression <- lm(Petal.Length ~ Petal.Width, data=iris)       # Create the linear regression model
+
+plot(iris$Petal.Length ~ iris$Petal.Width)                              # Create the initial plot
+abline(simpleIrisRegression)                                            # Overlay the regression line
+summary(simpleIrisRegression)                                           # Statistical Summary
+
+# Example of a poor linear relationship
+xyplot(iris$Sepal.Length ~ iris$Sepal.Width)
+xyplot(iris$Sepal.Length ~ iris$Sepal.Width | iris$Species)
+
+simpleIrisRegression <- lm(Sepal.Length ~ Sepal.Width, data=iris)
+
+plot(iris$Sepal.Length ~ iris$Sepal.Width)
+abline(simpleIrisRegression)
+summary(simpleIrisRegression)
+

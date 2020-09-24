@@ -80,7 +80,7 @@ v2
 
 # Create a simple matrix
 m <- matrix(c(1,2,3,4,5,6), nrow=2, byrow=TRUE)   # Six elements, two rows three columns
-m2 <- matrix(c(1,2,3,4,5,6), nrow=3, byrow=FALSE)   # Six elements, three rows two columns
+m2 <- matrix(c(1,2,3,4,5,6), nrow=3, byrow=FALSE) # Six elements, three rows two columns
 
 m
 m2
