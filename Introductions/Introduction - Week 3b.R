@@ -58,9 +58,25 @@ aList$V_Input[i] <- ifelse((aList$ID[i] %% 2) == 0, FALSE, TRUE)
 #       bar plot     
 #       barplot(wordCnt$wordFreq,xlab="Words", ylab="Frequency (count)" )
 
+
+library(quanteda)                                                  # Quanteda
+library(readtext)                                                  # Alternative to read in file
+sample_data <- readtext("text_file.txt")                               
+corpus <- corpus(sample_data)                                      # This is the collection of docs
+summary(corpus)                                                    # Summary
+words <- tokens(corpus, remove_numbers = TRUE, remove_punct=TRUE)  # Tokenize word string
+document_freq_matrix <- dfm(corpus)                                # Create Document Frequency
+topfeatures(document_freq_matrix, 20)                              # Extract top 20 features
+
+
 #  4.  read.csv()        We have done this multiple times so far
 
 #  5.  Linear regression
+
+
+
+
+
 
 
 library(lattice)
