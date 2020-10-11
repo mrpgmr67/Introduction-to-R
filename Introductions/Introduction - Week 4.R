@@ -68,8 +68,8 @@ addmargins((new_table))
 # - You are given the function
 # - Explain what is happening inside of this function
 # - Leave comments after each statement
-subtable <- function(tbl, subnames){
-  tblarray <-unclass(tbl)
+subtable <- function(tbl, subnames){        #
+  tblarray <-unclass(tbl)                   #  
   dcargs <-list(tblarray)
   ndims <-length(subnames)
   for (i in 1:ndims){
