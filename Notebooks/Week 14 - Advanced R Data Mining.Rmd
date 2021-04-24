@@ -4,7 +4,7 @@ output:
   pdf_document: default
 ---
 ```{r setup}
-knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")
+knitr::opts_knit$set(root.dir = "D:/Projects/Introduction-to-R/Data")
 library("dplyr")      # Data manipulation
 library("tidyr")      # Tidying the data
 library("validate")   # Data validation

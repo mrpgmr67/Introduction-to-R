@@ -1,10 +1,11 @@
 ---
 title: "Week 11 Optimization, Performance Enhancement, and Debugging"
 output:
+  pdf_document: default
   html_notebook: default
 ---
 ```{r setup}
-knitr::opts_knit$set(root.dir = "D:/Introduction-to-R/Data")
+knitr::opts_knit$set(root.dir = "D:/Davenport/Introduction-to-R/Data")
 library(validate)
 library(magrittr)
 ```

@@ -20,7 +20,16 @@ print.Data_710 <- function(davenport_person){         # Create a print function
   cat(davenport_person$Instructor,"\n")
 }
 
+#You will get a warning with this statement
 methods(,"Data_710")      # Check to make sure the class now has a print function attached to it
+
+# UseMethod is one way to make the warning go away
+x <- structure(1, class = letters)
+Data_710 <- function(x) UseMethod("Data_710", x)
+Data_710.z <- function(x) "z"
+Data_710(x)
+methods("Data_710")
+
 
 # Inheritance
 demo_two <- list(name="Kimberly", ID=2, Instructor=FALSE, GPA=4.0)

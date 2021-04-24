@@ -2,6 +2,7 @@
 title: "Week 6 - Introduction to Simulations"
 output:
   html_notebook: default
+  pdf_document: default
 ---
 In the previous weeks, data and control structures were discussed in great detail. This week begins an examination of simulations. Using R for statistical simulations allows the student to experience the real power of this scripting language.
 

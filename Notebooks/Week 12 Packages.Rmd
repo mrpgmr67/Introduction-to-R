@@ -1,8 +1,8 @@
 ---
 title: "Week 12 R Packages"
 output:
-  html_notebook: default
   pdf_document: default
+  html_notebook: default
 ---
 ```{r setup}
 knitr::opts_knit$set(root.dir = "D:/Projects/Introduction-to-R/Notebooks")
@@ -69,7 +69,7 @@ hist(loop_wheel,xlab="Number",main="(4) Sample Distribution",col = "Pink")
 
 I will genererate a summary of basic statistics from the "trees" data set.
 
-```{r TREE_SUMMARY}
+```{r}
 summary(trees)
 ```
 
