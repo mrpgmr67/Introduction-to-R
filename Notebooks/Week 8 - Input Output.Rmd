@@ -1,12 +1,12 @@
 ---
 title: "Week 8 - Input / Output"
 output:
-  word_document: default
   html_notebook: default
+  word_document: default
   pdf_document: default
 ---
 ```{r setup}
-knitr::opts_knit$set(root.dir = "D:/Projects/Introduction-to-R/Data")
+knitr::opts_knit$set(root.dir = "P:/Introduction-to-R/Data")
 library(dplyr)                                                      # going to use this for the arrange function
 ```
 In previous weeks, the course briefly discussed the import and export of data. This week will take an even more in-depth look at the ability for R to import and export data files. This includes both local copies of data as well as access to online sources.

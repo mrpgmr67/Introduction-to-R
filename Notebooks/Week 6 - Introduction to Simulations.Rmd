@@ -1,7 +1,6 @@
 ---
-title: "Week 6 - Introduction to Simulations"
+title: "Week 6 Introduction to Simulations"
 output:
-  html_notebook: default
   pdf_document: default
 ---
 In the previous weeks, data and control structures were discussed in great detail. This week begins an examination of simulations. Using R for statistical simulations allows the student to experience the real power of this scripting language.
@@ -13,7 +12,7 @@ In the previous weeks, data and control structures were discussed in great detai
 4. Create a probability and a distribution. Build a function that will determine the corresponding quantile for that probability.
 5. Build a function that will calculate a z-score and form a confidence interval for a mean of a population.
 6. Using the simulation you suggested in the discussions, create an R program for that simulation. Include graphs and statistical information.
-```{r setup}
+```{r setup, echo=FALSE, message=FALSE}
 library(ggplot2)
 ```
 ## 1. Probability of Ace - Card Simulation
@@ -23,8 +22,13 @@ It is based on the fact that a deck will have four aces in it.  We are going to 
 - drawAces is the wrapper
 
 #### Full Points
-For full points you need to write a similar function.  It is okay if you use the same multiples of 13 rule, but your function should not be a straight copy from this one.  A graph is not required but nice to have.
-```{r}
+For full points you need to code a function that determines this probability.  It is okay if you use the same multiples of 13 rule.  A graph is not required but nice to have.
+
+    if ((aCard %% 13) == 0) {         # Cards 13,26,39,52 are aces (all of these are modulus %% of 13)
+      foundAce <- TRUE
+    } 
+
+```{r DrawingAces, echo=FALSE, message=FALSE}
 drawAces <- function(attempts) {      # Wrapper function
   
   drawAce <- function(){              # Inner function
@@ -50,7 +54,7 @@ drawAces <- function(attempts) {      # Wrapper function
 #### Testing Ace Card Simulation
 
 Let's setup a test using powers of 10.  I'm going to store it in a data frame, so afterwards I can graph it out and print the data frame.
-```{r Ace Testing}
+```{r AceTesting}
 # The greater number of attempts, the closer the simulation results calculate the probability
 df <- data.frame(Attempts=c("10", "100", "1000","10000","100000","1000000"), Values=
         c(drawAces(10),
@@ -80,9 +84,19 @@ Please remember to make these **functions**.
 #### Full Points
 For full points you should write two functions.  One using sample() and the other using rbinom().  
 
+
+
+Pseudo Code
+
+for (i in 1:50) {
+
+  sample(0:1,1)
+  
+}
+  
 #### Demonstration: 
 First let's do a simple one using sample() and plot it on a pie chart.  Assuming we flip the coin fifty times.  HINT this can be rewritten in a function of three lines.
-```{r Coin Toss Simulation}
+```{r CoinTossSimulation, echo=FALSE, message=FALSE}
 
 datalist = list()
 for (i in 1:50) {
@@ -108,8 +122,12 @@ rbinom(n, size, prob)
 
 Where n is the number of observations, size is the number of trials (zero or more), and prob is the probability of success on each trial.  Let's assume a probability of 0.5 per flip. HINT this can also be rewritten in a function of three lines.
 
+Pseudo Code
 
-```{r Coin Toss Using rbinom}
+Same, but with a rbinom statement like this:  rbinom(1,size=1,prob=0.5)
+
+
+```{r CoinTossUsingrbinom, echo=FALSE, message=FALSE}
 datalist = list()
 for (i in 1:50) {
   dat <- data.frame(Value = rbinom(1,size=1,prob=0.5))
@@ -151,11 +169,14 @@ simply as shortened notation.
 
 The mathematical formula for creating the distribution is the core of what is returned.  You may use this formula in your submission:
 
-(factorial(n)/(factorial(x[i])*factorial(n-x[i])))*(p^x[i])*(1-p)^(n-x[i])
+HINT: YOU MUST USE THIS FORMULA
+
+**(factorial(n)/(factorial(x[i])*factorial(n-x[i])))*(p^x[i])*(1-p)^(n-x[i])**
+
 
 #### Full Points
-For full points you should write a function similar to this one.  You may use the same mathematical forumula as well as the dbinom() function. 
-```{r Discrete Distribution}
+You may use the same mathematical forumula as well as the dbinom() function. 
+```{r DiscreteDistribution, echo=FALSE, message=FALSE}
 myBinomialPD <- function(x,n,p) {
   aResultSet <- vector(mode='numeric',length=length(x))    # Create a result set to return
   for (i in 1:length(x)) {
@@ -172,7 +193,7 @@ Let's run a test on it using the parameters:
 - 0.6 probability
 
 First we will run the function and then we will display the distribution as a test.
-```{r Discrete Test}
+```{r DiscreteTest}
 myBinomialPD(1,10,0.6)
 
 # Display Binomial distribution table as a test
@@ -180,7 +201,6 @@ for (i in 0:10) {
   aResult <- myBinomialPD(i,10,0.6)
   print(aResult)
 }
-
 
 ```
 Now we will compare the results to the standard R function using the same parameters for both calls
@@ -190,7 +210,7 @@ Now we will compare the results to the standard R function using the same parame
 - probability = 0.6
 
 If the function is working, myBinomialPD() should return the same results as the standard R function dbinom()
-```{r Compare distribution to standard R function}
+```{r Comparedistribution}
 myBinomialPD(c(0:10),10,0.6)
 dbinom(c(0:10),10,0.6)
 ```
@@ -213,7 +233,7 @@ https://www.rdocumentation.org/packages/stats/versions/3.6.1/topics/quantile
 
 #### Full Points
 For full points you should write a function similar to this one.  You may use the same mathematical forumula as well as the various functions used in this demonstration. 
-```{r Probability and Distribution with Quantile}
+```{r ProbabilityandDistributionwithQuantile}
 myQuantile <- function(x,y){
   
   x <- sort(x)     # Adding in a sort() because we want consistent splits on the quantile
@@ -233,14 +253,14 @@ myQuantile <- function(x,y){
 ```
 #### Test Quantile 1
 We are going to setup a test to compare the myQuantile() function against the standard r quantile function.  If everyting works, the two lines should match:
-```{r Test Quantile 1}
+```{r TestQuantile 1}
 aPD <- dbinom(c(0:5),5,0.5)
 myQuantile(aPD,c(0,0.25,0.5,0.75,1.0))
 quantile(aPD,c(0,0.25,0.5,0.75,1.0),type=3)
 ```
 #### Test Quantile 2
 Just for good measure, let's check again with a slightly different one.  If everyting works, the two lines should match:
-```{r Test Quantile 2}
+```{r TestQuantile 2}
 aPD <- dbinom(c(0:15),15,0.5)
 myQuantile(aPD,c(0,0.25,0.5,0.75,1.0))
 quantile(aPD,c(0,0.25,0.5,0.75,1.0),type=3)
@@ -253,12 +273,14 @@ Simply put, a z-score is the number of standard deviations from the mean a data 
 
 https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/z-score/
 
-To actually get it in R, one easy way is to use the scale(x) function
+
+z-score = (sample - mean) / standard deviation
+
+HINT:  One easy way is to use the scale(x) function
 
 #### Full Points
-
-Write a function to calcuate z-scores, similar to what you see here:
-```{r Z Score}
+Write a function to calcuate z-scores.
+```{r ZScore, echo=FALSE, message=FALSE}
 set.seed(1234)
 x= sample(1:50, 100, replace=TRUE)
 
@@ -289,7 +311,7 @@ Two parameters are used to generate the simulation results.
 
 - numberofOrders - number of orders to simulate
 - inventoryAvailable - % of inventory that is planned to be in the product buffer
-```{r Inventory Fullfilment}
+```{r InventoryFullfilment}
 inventorySimulation <- function(numberOfOrders,inventoryAvailable){
 
     printStats <- function (aSimResult, inventoryAvailable) {
