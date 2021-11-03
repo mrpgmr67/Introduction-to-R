@@ -2,12 +2,12 @@
 # 
 #   Data 710:  Introduction to R
 #   Michael S. Pomatto  (mpomatto@davenport.edu)
-#   Week 6 - Introduction to Simulations
+#   Week 9 - String Manipulation
 #
 #   GITHUB:  https://github.com/mrpgmr67/Introduction-to-R
 #
 ##########################################################################
-setwd("D:/Davenport/Data 710 Scripts/Data")                      # Don't forget to set to your working directory to find the files
+setwd("P:/Introduction-to-R/Data")                      # Don't forget to set to your working directory to find the files
 
 #  This example will use the PDF Tools library (pdftools)
 #  You can install it with the command install.packages("pdftools")
@@ -20,6 +20,8 @@ nchar(sample_data)      # Find the length of the string
 
 new_sample_data <- paste("Give to students: ", sample_data)   # Concat string "Give to students: " to the front
 new_sample_data
+
+?grep
 
 a <- grep("analysis",sample_data, ignore.case = TRUE)     # Returns character vector
 b <- grepl("analysis",sample_data, ignore.case = TRUE)    # Returns logical vector
